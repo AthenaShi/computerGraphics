@@ -6,6 +6,7 @@ public class test1 extends BufferedApplet
    int counter = 0;
 
    public void render(Graphics g) {
+	   /*
       int w = getWidth();
       int h = getHeight();
 
@@ -19,7 +20,8 @@ public class test1 extends BufferedApplet
       g.setColor(Color.black);
       g.drawOval(100 + counter, 100 + counter, 300, 150);
 
-      counter++;
+      counter++;*/
+	g.drawArc(100, 100, 100, 100, 90, 90); 
    }
 }
 

@@ -1,0 +1,25 @@
+body {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 18px;
+  background-color: #C6DEFF;
+}
+
+h1
+{
+  color:blue;
+  text-align:center;
+  font-size: 40px;
+}
+
+h2
+{
+  color:;
+  text-align:center;
+  font-size: 30px;
+}
+
+p
+{
+  font-size: 22px;
+}
+
