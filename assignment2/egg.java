@@ -39,8 +39,10 @@ public class egg extends BufferedApplet
 
 	   int w = getWidth();
 	   int h = getHeight();
-	   g.setColor(Color.blue);
+	   g.setColor(new Color(65, 105, 225));	// RoyalBlue
 	   g.fillRect(0, 0, w, h);
+	   g.setColor(new Color(156, 102, 31));	// brick
+	   g.fillRect(0, (int)(endY*scale+y+97), w, h-(int)(endY*scale+y+97));
       
 	   double ay = 100 - 100 * Math.abs(Math.cos(6 * time));
 	   double ax = 250 * time;
