@@ -30,7 +30,7 @@ public class yoshiHead extends BufferedApplet
 		// calculate headPatch[][]
 		double startX = -0.7;
 		double endX = 1.0;
-		double bootstrap = 0.1;
+		double bootstrap = 0.001;
 		int n = (int)( (endX-startX)/bootstrap) + 1;
 		double headPatchs1[][] = new double[n][4];
 		double headPatchs2[][] = new double[n][4];
@@ -145,7 +145,7 @@ public class yoshiHead extends BufferedApplet
 			}
 		}
 				// calculate coordinates of lower patches x^2 + y^2 +z^2 = 1
-		int l = 18;
+		int l = n;
 		double bootStrap1 = (startPatch1[0]-endPatch1[0])/(double)(l-1);
 		double bootStrap2 = (startPatch2[0]-endPatch2[0])/(double)(l-1);
 
