@@ -8,6 +8,9 @@ public class egg extends BufferedApplet
 	double startTime = getTime();
 	double speed = 1;
 	double r = 100;
+	double eyeA = 0.25*r;
+	double eyeB = 0.45*r;
+	double eyeC = 0.25*r;
 
 	public void render(Graphics g) {
 		double time = getTime() - startTime;
@@ -28,7 +31,6 @@ public class egg extends BufferedApplet
 		int n = (int)( (endX-startX)/bootstrap) + 1;
 		double headPatchs[][] = new double[n][4];
 		double x=0,y=0,z=0;
-		System.out.println("start calculate");
 		for (int i=0; i<n; i++) {
 			x = startX;
 			y = Math.sqrt( 1 - Math.pow(x-0.3,2) ) - 0.7;
@@ -41,9 +43,48 @@ public class egg extends BufferedApplet
 			headPatchs[i][1] = y *r/scale;
 			headPatchs[i][2] = z *r/scale;
 			headPatchs[i][3] = 1;
-			System.out.println("X: "+x+"\tY: "+y+"\tZ: "+z);
+			//System.out.println("X: "+x+"\tY: "+y+"\tZ: "+z);
 		}
-		System.out.println("end calculate");
+		System.out.println("start calculate");
+
+				// calculate eyeWhite[][]
+		double startY = 0.7;
+		double endY = 1.6;
+		bootstrap = 0.01;
+		int nWhite = (int)( (endY-startY)/bootstrap) + 1;
+		double eyeWhite1[][] = new double[nWhite*2][4];
+		double eyeWhite2[][] = new double[nWhite*2][4];
+		for (int i=0; i<nWhite; i++) {
+			y = startY;
+			x = -Math.sqrt(1 - Math.pow((y-1)/(eyeB/r),2)) * eyeA/r + 0.44;
+			if (1 - Math.pow((x-1.0/6.0)/0.25,2) - Math.pow((y-1.15)/0.45,2) < 0) {
+				System.out.println(Math.pow((x-1.0/6.0)/0.25,2) +"+"+ Math.pow((y-1.15)/0.45,2));
+
+			}
+
+			z = Math.sqrt( 1 - Math.pow((x-1.0/6.0)/0.25,2) - Math.pow((y-1.15)/0.45,2) ) * eyeC/r + 0.15;
+		//	else
+		//		z = 0;
+			startY += bootstrap;
+			eyeWhite1[i][0] = x *r/scale;
+			eyeWhite1[i][1] = y *r/scale;
+			eyeWhite1[i][2] = z *r/scale;
+			eyeWhite1[i][3] = 1;
+			eyeWhite2[i][0] = x *r/scale;
+			eyeWhite2[i][1] = y *r/scale;
+			eyeWhite2[i][2] = -z *r/scale;
+			eyeWhite2[i][3] = 1;
+			System.out.print("X: "+x+"\tY: "+y+"\tZ: "+z);
+			
+			if ( Math.pow((x-1.0/6.0)/0.25,2) + Math.pow((y-1.15)/0.45,2) <= 1 )
+				System.out.println("\tYES!");
+			else
+				System.out.println();
+		}
+
+
+
+
 		
 		double tempHead[] = new double[4];
 		int drawHead[] = new int[4];
