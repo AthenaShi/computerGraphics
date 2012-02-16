@@ -20,12 +20,7 @@ public class yoshiHead extends BufferedApplet
 		scale = width / 2;
 		g.setColor(new Color(65, 105, 225));
 		g.fillRect(0,0,width,height);
-//		g.setColor(Color.black);
-//		g.drawLine(0,height/2,width,height/2);
-//		g.drawLine(0,height/2-100,width,height/2-100);
-//		g.drawLine(0,height/2+100,width,height/2+100);
-//		g.drawLine(width/2,0,width/2,height);
-
+		
 		// in (0,0) coordinates drawing...
 		// head: ball (0,0,0), r=100
 		double headCenter[] = {0,0,0,1};
@@ -61,7 +56,6 @@ public class yoshiHead extends BufferedApplet
 		int nWhite = (int)( (endY-startY)/bootstrap) + 1;
 		double eyeWhite1[][] = new double[nWhite*2][4];
 		double eyeWhite2[][] = new double[nWhite*2][4];
-		//System.out.println("firstHalf========");
 		for (int i=0; i<nWhite; i++) {
 			y = startY;
 			x = -Math.sqrt(1 - Math.pow((y-1)/(eyeB/r),2)) * eyeA/r + 0.44;
@@ -75,7 +69,6 @@ public class yoshiHead extends BufferedApplet
 			eyeWhite2[i][1] = y *r/scale;
 			eyeWhite2[i][2] = -z *r/scale;
 			eyeWhite2[i][3] = 1;
-			//System.out.println("X: "+eyeWhite1[i][0]+"\tY: "+eyeWhite1[i][1]+"\tZ: "+eyeWhite1[i][2]);
 		}
 		for (int i=nWhite; i<2*nWhite; i++) {
 			eyeWhite1[i][0] = eyeWhite1[2*nWhite-i-1][0];
@@ -86,7 +79,6 @@ public class yoshiHead extends BufferedApplet
 			eyeWhite2[i][1] = eyeWhite2[2*nWhite-i-1][1];
 			eyeWhite2[i][2] = -2*0.15*r/scale - eyeWhite2[2*nWhite-i-1][2];
 			eyeWhite2[i][3] = 1;
-			//System.out.println("X: "+eyeWhite1[i][0]+"\tY: "+eyeWhite1[i][1]+"\tZ: "+eyeWhite1[i][2]);
 		}
 
 		// nose: ball ( r,0,0 ), r=100
@@ -114,7 +106,6 @@ public class yoshiHead extends BufferedApplet
 				z = 0.15;
 			else
 				z = Math.sqrt( 1 - Math.pow((y-1.15)/dy,2) ) * 0.08 + 0.15;
-			System.out.println("x: "+x+"\ty: "+y+"\tz: "+z);
 			blackYlo += 0.01;
 			eyeBlack1[i][0] = x *r/scale;
 			eyeBlack1[i][1] = y *r/scale;
@@ -124,7 +115,6 @@ public class yoshiHead extends BufferedApplet
 			eyeBlack2[i][1] = y *r/scale;
 			eyeBlack2[i][2] = -z *r/scale;
 			eyeBlack2[i][3] = 1;
-			//System.out.println("X: "+eyeBlack1[i][0]+"\tY: "+eyeBlack1[i][1]+"\tZ: "+eyeBlack1[i][2]);
 		}
 		for (int i=nBlack; i<2*nBlack; i++) {
 			eyeBlack1[i][0] = eyeBlack1[2*nBlack-i-1][0];
@@ -135,7 +125,6 @@ public class yoshiHead extends BufferedApplet
 			eyeBlack2[i][1] = eyeBlack2[2*nBlack-i-1][1];
 			eyeBlack2[i][2] = -2*0.15*r/scale - eyeBlack2[2*nBlack-i-1][2];
 			eyeBlack2[i][3] = 1;
-			//System.out.println("X: "+eyeBlack1[i][0]+"\tY: "+eyeBlack1[i][1]+"\tZ: "+eyeBlack1[i][2]);
 		}
 		// dragon 3
 		double dragon[][] = {
@@ -253,8 +242,6 @@ public class yoshiHead extends BufferedApplet
 				}	
 				nFrontWhite1++;
 			}
-			//System.out.println("start index: "+frontWhiteStartIndex1);
-
 			if (tempEyeWhite2[i][2] > tempEye2[2]) {	// a front white
 				if (!counted2) {
 					frontWhiteStartIndex2 = i;
@@ -284,16 +271,10 @@ public class yoshiHead extends BufferedApplet
 		// calculate lower white eye	( x-tempEye1[0] / eyeA/r )^2 + ( y-tempEye1[1] / eyeB/r )^2 +( z-tempEye1[2] / eyeC/r )^2 = 1
 		int lWhite = 2*nWhite;
 		double bootStrap1 = (startWhite1[1]-endWhite1[1])/(double)(lWhite-1);
-		//System.out.println("nFront: "+nFrontWhite1);
-		//System.out.println("endWhite: "+startWhite1[1]);
-		//System.out.println("startWhite: "+endWhite1[1]);
-		//System.out.println("bootStrap1: "+bootStrap1);
-
 		double bootStrap2 = (startWhite2[1]-endWhite2[1])/(double)(lWhite-1);
 		double lowerWhite1[][] = new double[lWhite][2];
 		int drawLowerWhite1[][] = new int[lWhite][2];
 		double startYL1 = endWhite1[1];
-		//System.out.println("start=========");
 		for (int i=0; i<lWhite; i++) {
 			y = startYL1/(r/scale);
 			if (speed*time % (2*Math.PI) > Math.PI && speed*time % (2*Math.PI) <= Math.PI*3.0/2.0)	// front left x should be minus
@@ -303,7 +284,6 @@ public class yoshiHead extends BufferedApplet
 			startYL1 += bootStrap1;
 			lowerWhite1[i][0] = x *r/scale;
 			lowerWhite1[i][1] = y *r/scale;
-		//	System.out.println("X: "+x+"\tY: "+y);
 		}
 		double lowerWhite2[][] = new double[lWhite][2];
 		int drawLowerWhite2[][] = new int[lWhite][2];
@@ -396,9 +376,8 @@ public class yoshiHead extends BufferedApplet
 		viewport(tempPole1end,drawPole1end);
 		viewport(tempPole2end,drawPole2end);
 			// dragon
-		for (int i=0; i<9; i++) {
+		for (int i=0; i<9; i++) 
 			viewport(tempDragon[i],drawDragon[i]);
-		}
 			// eye black
 		for (int i=0; i<2*nBlack; i++) {
 			viewport(tempEyeBlack1[i],drawEyeBlack1[i]);
@@ -488,7 +467,6 @@ public class yoshiHead extends BufferedApplet
 		}
 
 		// DRAW!!!!!!!!!
-		//if (Math.sin(speed*time) >= 0) {	// back
 	//	if ( false ) { 	
 		if ( speed*time % (2*Math.PI) <= Math.PI/2.0 ) {	// back right
 	//	if (true) {	// back right
@@ -542,7 +520,6 @@ public class yoshiHead extends BufferedApplet
 			g.setColor(Color.red);
 			g.drawPolygon(dragonX1, dragonY1,9);
 			g.fillPolygon(dragonX1, dragonY1,9);
-
 			// draw head circle
 //			g.setColor(Color.black);
 //			g.drawOval(coHead[0], coHead[1], coHead[2], coHead[3]);
@@ -725,18 +702,15 @@ public class yoshiHead extends BufferedApplet
 			g.drawLine(drawPole1start[0],drawPole1start[1],drawPole1end[0],drawPole1end[1]);
 			g.drawLine(drawPole2start[0],drawPole2start[1],drawPole2end[0],drawPole2end[1]);		
 		}
-		
 	}
 
 	double getTime() {
 		return System.currentTimeMillis() / 1000.0;
 	}
-
 	public void viewport(double src[], int dst[]) {
 		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
 		dst[1] = (int) ( 0.5 * height - src[1] * scale );
 	}
-
 	public int[] coTransform(double middle[], double a, double b) {
 		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
 		return array;
