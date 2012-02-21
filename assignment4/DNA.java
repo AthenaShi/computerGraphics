@@ -6,29 +6,31 @@ public class DNA extends BufferedApplet
 	int height = 0;
 	double scale = 1;
 	double startTime = getTime();
-	double speed = 1;
-	int n = 20;
-	double r = 40;
+	double speed = 1.5;
+	int n = 10;
+	int nTotal = 20;
+	double r = 25;
 	double rMiddle = r/3.0;
 	double rBonds = r/4.0;
 	double rSmall = r/2.2;
 	double rBig = r/1.5;
 	double rLength = r;
+	double theta = Math.PI/15.0;
+	double dy = Math.sqrt( Math.pow(rBig+rSmall,2) - Math.pow((rLength*2+rMiddle+rBig)*Math.sin(theta),2) );
 
 	public void render(Graphics g) {
 		/* ************* SET UP ************ */
 		double time = getTime() - startTime;
 		width = getWidth();
 		height = getHeight();
-	//	scale = width / 2;
-		g.setColor(Color.white);
+		g.setColor(Color.black);
 		g.fillRect(0,0,width,height);
-
 		Geometry geo = new Geometry();
 		Matrix matrix = new Matrix();
 		matrix.identity();
 
 		/* ************* INITIALIZE ************ */
+	for (int ii=0; ii<nTotal; ii++) {
 		// the middle molecular
 		geo.globe(n,n);
 		double middleV[][] = new double[(n+1)*(n+1)][4];
@@ -38,6 +40,8 @@ public class DNA extends BufferedApplet
 		geo.copy(middleV, middleF);
 		// tranform molecular
 		matrix.rotateY(speed * time);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(0,dy*2.0*ii,0);
 		matrix.scale(rMiddle,rMiddle,rMiddle);
 		for (int i=0; i<middleV.length; i++) {
 			matrix.transform(middleV[i],middleAfterV[i]);
@@ -59,7 +63,8 @@ public class DNA extends BufferedApplet
 		geo.copy(bond2V, bond2F);
 		// transform bonds
 		matrix.rotateY(speed * time);
-		matrix.translate(-rLength-rMiddle,0,0);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(-rLength-rMiddle,dy*2.0*ii,0);
 		matrix.rotateY(Math.PI/2.0);
 		matrix.scale(rBonds,rBonds,rLength);
 		for (int i=0; i<bond1V.length; i++) {
@@ -68,7 +73,8 @@ public class DNA extends BufferedApplet
 		}
 		matrix.identity();
 		matrix.rotateY(speed * time);
-		matrix.translate(rLength+rMiddle,0,0);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(rLength+rMiddle,dy*2.0*ii,0);
 		matrix.rotateY(-Math.PI/2.0);
 		matrix.scale(rBonds,rBonds,rLength);
 		for (int i=0; i<bond2V.length; i++) {
@@ -101,9 +107,10 @@ public class DNA extends BufferedApplet
 		geo.copy(outSmallLeftV, outSmallLeftF);
 		geo.copy(outBigRightV, outBigRightF);
 		geo.copy(outSmallRightV, outSmallRightF);
-		// transform two big moleculars 
+		// transform two big moleculars
 		matrix.rotateY(speed * time);
-		matrix.translate(-rLength*2-rMiddle-rBig,0,0);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(-rLength*2-rMiddle-rBig,dy*2.0*ii,0);
 		matrix.scale(rBig,rBig,rBig);
 		for (int i=0; i<outBigLeftV.length; i++) {
 			matrix.transform(outBigLeftV[i],outBigLeftAfterV[i]);
@@ -111,7 +118,8 @@ public class DNA extends BufferedApplet
 		}
 		matrix.identity();
 		matrix.rotateY(speed * time);
-		matrix.translate(rLength*2+rMiddle+rBig,0,0);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(rLength*2+rMiddle+rBig,dy*2.0*ii,0);
 		matrix.scale(rBig,rBig,rBig);
 		for (int i=0; i<outBigRightV.length; i++) {
 			matrix.transform(outBigRightV[i],outBigRightAfterV[i]);
@@ -120,7 +128,10 @@ public class DNA extends BufferedApplet
 		matrix.identity();
 		// transform two small moleculars 
 		matrix.rotateY(speed * time);
-		matrix.translate(-rLength*2-rMiddle-rBig,rBig+rSmall,0);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(0,dy*2.0*ii,0);
+		matrix.rotateY(theta);
+		matrix.translate(-rLength*2-rMiddle-rBig,dy,0);
 		matrix.scale(rSmall,rSmall,rSmall);
 		for (int i=0; i<outSmallLeftV.length; i++) {
 			matrix.transform(outSmallLeftV[i],outSmallLeftAfterV[i]);
@@ -128,14 +139,16 @@ public class DNA extends BufferedApplet
 		}
 		matrix.identity();
 		matrix.rotateY(speed * time);
-		matrix.translate(rLength*2+rMiddle+rBig,rBig+rSmall,0);
+		matrix.rotateY(theta);
+		matrix.rotateY(theta*2.0*ii);
+		matrix.translate(0,dy*2.0*ii,0);
+		matrix.translate(rLength*2+rMiddle+rBig,dy,0);
 		matrix.scale(rSmall,rSmall,rSmall);
 		for (int i=0; i<outSmallRightV.length; i++) {
 			matrix.transform(outSmallRightV[i],outSmallRightAfterV[i]);
 			viewport(outSmallRightAfterV[i],outSmallRightDrawV[i]);
 		}
 		matrix.identity();
-
 
 			/* ************* DRAW ************ */
 		if ( outBigLeftAfterV[0][2] >= outBigRightAfterV[0][2]) {	// draw right first
@@ -259,6 +272,7 @@ public class DNA extends BufferedApplet
 				}
 			}
 		}
+		}
 	}
 
 	double getTime() {
@@ -266,7 +280,8 @@ public class DNA extends BufferedApplet
 	}
 	public void viewport(double src[], int dst[]) {
 		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
-		dst[1] = (int) ( 0.5 * height - src[1] * scale );
+		//dst[1] = (int) ( 0.5 * height - src[1] * scale );
+		dst[1] = (int) ( height - src[1] * scale );
 	}
 	public int[] coTransform(double middle[], double a, double b) {
 		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
@@ -277,4 +292,3 @@ public class DNA extends BufferedApplet
 		return array;
 	}
 }
-
