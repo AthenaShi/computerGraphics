@@ -17,7 +17,41 @@ public class DNA extends BufferedApplet
 	double rLength = r;
 	double theta = Math.PI/15.0;
 	double dy = Math.sqrt( Math.pow(rBig+rSmall,2) - Math.pow((rLength*2+rMiddle+rBig)*Math.sin(theta),2) );
+	Geometry geo = new Geometry();
+	Matrix matrix = new Matrix();
+	// middle molecular
+	double middleV[][] = new double[(n+1)*(n+1)][4];
+	int middleF[][] = new int[n*n][4];
+	double middleAfterV[][] = new double[(n+1)*(n+1)][4];
+	int middleDrawV[][] = new int[(n+1)*(n+1)][4];
+	// two bonds
+	double bond1V[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	double bond1AfterV[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	int bond1DrawV[][] = new int[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	int bond1F[][] = new int[n*n+2*n*n][4];
+	double bond2V[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	double bond2AfterV[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	int bond2DrawV[][] = new int[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
+	int bond2F[][] = new int[n*n+2*n*n][4];
+	// four outside moleculars
+	double outBigLeftV[][] = new double[(n+1)*(n+1)][4];
+	double outBigLeftAfterV[][] = new double[(n+1)*(n+1)][4];
+	int outBigLeftDrawV[][] = new int[(n+1)*(n+1)][4];
+	int outBigLeftF[][] = new int[n*n][4];
+	double outSmallLeftV[][] = new double[(n+1)*(n+1)][4];
+	double outSmallLeftAfterV[][] = new double[(n+1)*(n+1)][4];
+	int outSmallLeftDrawV[][] = new int[(n+1)*(n+1)][4];
+	int outSmallLeftF[][] = new int[n*n][4];
 
+	double outBigRightV[][] = new double[(n+1)*(n+1)][4];
+	double outBigRightAfterV[][] = new double[(n+1)*(n+1)][4];
+	int outBigRightDrawV[][] = new int[(n+1)*(n+1)][4];
+	int outBigRightF[][] = new int[n*n][4];
+	double outSmallRightV[][] = new double[(n+1)*(n+1)][4];
+	double outSmallRightAfterV[][] = new double[(n+1)*(n+1)][4];
+	int outSmallRightDrawV[][] = new int[(n+1)*(n+1)][4];
+	int outSmallRightF[][] = new int[n*n][4];
+	
 	public void render(Graphics g) {
 		/* ************* SET UP ************ */
 		double time = getTime() - startTime;
@@ -25,18 +59,12 @@ public class DNA extends BufferedApplet
 		height = getHeight();
 		g.setColor(Color.black);
 		g.fillRect(0,0,width,height);
-		Geometry geo = new Geometry();
-		Matrix matrix = new Matrix();
 		matrix.identity();
 
 		/* ************* INITIALIZE ************ */
 	for (int ii=0; ii<nTotal; ii++) {
 		// the middle molecular
 		geo.globe(n,n);
-		double middleV[][] = new double[(n+1)*(n+1)][4];
-		int middleF[][] = new int[n*n][4];
-		double middleAfterV[][] = new double[(n+1)*(n+1)][4];
-		int middleDrawV[][] = new int[(n+1)*(n+1)][4];
 		geo.copy(middleV, middleF);
 		// tranform molecular
 		matrix.rotateY(speed * time);
@@ -51,14 +79,6 @@ public class DNA extends BufferedApplet
 
 		// two bonds
 		geo.cylinder(n,n,n);
-		double bond1V[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		double bond1AfterV[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		int bond1DrawV[][] = new int[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		int bond1F[][] = new int[n*n+2*n*n][4];
-		double bond2V[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		double bond2AfterV[][] = new double[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		int bond2DrawV[][] = new int[(n+1)*(n+1)+2*(n+1)*(n+1)][4];
-		int bond2F[][] = new int[n*n+2*n*n][4];
 		geo.copy(bond1V, bond1F);
 		geo.copy(bond2V, bond2F);
 		// transform bonds
@@ -85,24 +105,6 @@ public class DNA extends BufferedApplet
 
 		// four outside moleculars
 		geo.globe(n,n);
-		double outBigLeftV[][] = new double[(n+1)*(n+1)][4];
-		double outBigLeftAfterV[][] = new double[(n+1)*(n+1)][4];
-		int outBigLeftDrawV[][] = new int[(n+1)*(n+1)][4];
-		int outBigLeftF[][] = new int[n*n][4];
-		double outSmallLeftV[][] = new double[(n+1)*(n+1)][4];
-		double outSmallLeftAfterV[][] = new double[(n+1)*(n+1)][4];
-		int outSmallLeftDrawV[][] = new int[(n+1)*(n+1)][4];
-		int outSmallLeftF[][] = new int[n*n][4];
-
-		double outBigRightV[][] = new double[(n+1)*(n+1)][4];
-		double outBigRightAfterV[][] = new double[(n+1)*(n+1)][4];
-		int outBigRightDrawV[][] = new int[(n+1)*(n+1)][4];
-		int outBigRightF[][] = new int[n*n][4];
-		double outSmallRightV[][] = new double[(n+1)*(n+1)][4];
-		double outSmallRightAfterV[][] = new double[(n+1)*(n+1)][4];
-		int outSmallRightDrawV[][] = new int[(n+1)*(n+1)][4];
-		int outSmallRightF[][] = new int[n*n][4];
-
 		geo.copy(outBigLeftV, outBigLeftF);
 		geo.copy(outSmallLeftV, outSmallLeftF);
 		geo.copy(outBigRightV, outBigRightF);

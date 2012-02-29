@@ -5,7 +5,8 @@ public class Doraemon extends BufferedApplet
 	int width = 0;
 	int height = 0;
 	double f = 80;
-	double scale = 6;
+//	double scale = 6;
+	double scale = 10;
 	double startTime = getTime();
 	double speed = 3;
 //	int headI = 100;
@@ -16,12 +17,13 @@ public class Doraemon extends BufferedApplet
 	double headSize = 10;
 	double bodySize = headSize * 0.7;
 	double limbSize = headSize * 0.2;
+	Color background = new Color(135, 206, 235);
+	Color bamboo = new Color(255, 215, 0);
    
 	Geometry bambooCopterLeft     = addNewGeometry();
 	Geometry bambooCopterRight    = addNewGeometry();
 	Geometry bambooCopterCenter   = addNewGeometry();
 	Geometry bambooCopterStick    = addNewGeometry();
-	Geometry bambooCopterBottom   = addNewGeometry();
 	Geometry head                 = addNewGeometry();
 	Geometry nose                 = addNewGeometry();
 //	Geometry collar               = addNewGeometry();
@@ -39,17 +41,16 @@ public class Doraemon extends BufferedApplet
 		double time = getTime() - startTime;
 		width = getWidth();
 		height = getHeight();
-		g.setColor(new Color(135, 206, 235));
+		g.setColor(background);
 		g.fillRect(0,0,width,height);
 
 		bambooCopterLeft.cylinder(bambooCopterI);
 		bambooCopterRight.cylinder(bambooCopterI);
 		bambooCopterCenter.globe(bambooCopterI);
 		bambooCopterStick.cylinder(bambooCopterI);
-		bambooCopterBottom.globe(bambooCopterI);
 
 		head.globe(headI);
-		nose.globe(5);
+		nose.globe(25);
 		body.cylinder(headI);
 //		collar.
 		armLeft.cylinder(limbI);
@@ -68,11 +69,11 @@ public class Doraemon extends BufferedApplet
    public void update(double time, Graphics g) {
       // CLEAR THE MATRIX STACK FOR THIS ANIMATION FRAME
       mclear();
-      m().perspect(f);
+     m().perspect(f);
       m().rotateY(Math.sin(time)*0.5);
       m().rotateY(time);
       m().translate(0,0,headSize*2);
-      m().rotateY(-time);
+      m().rotateY(-time); 
 
 
       // UPDATE THE bamboo Copter SHAPE
@@ -82,25 +83,25 @@ public class Doraemon extends BufferedApplet
          m().rotateY(speed*time*3.8);
             mpush();
                m().scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);
-               transformAndRender(bambooCopterCenter, m(), g, new Color(255, 215, 0));
+               transformAndRender(bambooCopterCenter, m(), g, bamboo);
             mpop();
             mpush();
                m().rotateX(-Math.PI / 2); 
                m().translate(0, 0, -(2.0+0.35)*bambooSize);
                m().scale(0.2*bambooSize, 0.2*bambooSize, 2.0*bambooSize);
-               transformAndRender(bambooCopterStick, m(), g, new Color(255, 215, 0));
+               transformAndRender(bambooCopterStick, m(), g, bamboo);
             mpop();
             mpush();
                m().rotateY(-Math.PI / 2); // ORIENT THE left bamboo copter
                m().translate(0, 0, (2.0+0.35)*bambooSize);
                m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
-               transformAndRender(bambooCopterLeft, m(), g, new Color(255, 215, 0));
+               transformAndRender(bambooCopterLeft, m(), g, bamboo);
             mpop();
             mpush();
                m().rotateY(Math.PI / 2); // ORIENT THE left bamboo copter
                m().translate(0, 0, (2.0+0.35)*bambooSize);
                m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
-               transformAndRender(bambooCopterRight, m(), g, new Color(255, 215, 0));
+               transformAndRender(bambooCopterRight, m(), g, bamboo);
             mpop();
 	 mpop();
 
@@ -111,6 +112,12 @@ public class Doraemon extends BufferedApplet
                m().scale(headSize, headSize, headSize);
                drawHead(head, m(),g);
             mpop();
+            mpush();
+	       m().translate(0, 0.4*headSize, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.4*headSize,2)) );
+               m().scale(headSize*0.1, headSize*0.1, headSize*0.1);
+               transformAndRender(nose, m(),g, Color.red);
+            mpop();
+
             // UPDATE THE BODY SHAPE
 	    mpush(); {
 	       m().translate(0, -headSize-bodySize*0.55*0.9, 0);
@@ -252,6 +259,24 @@ public class Doraemon extends BufferedApplet
 		double leftEyeCo = Math.pow(indexX+0.23,2)*1.5 + Math.pow(indexY-0.6,2);
 		double rightEyeCo = Math.pow(indexX-0.23,2)*1.5 + Math.pow(indexY-0.6,2);
 		double faceCo = Math.pow(indexX,2) + Math.pow(indexY+0.2,2);
+		if ( (-0.47-0.25) <= indexX && indexX <= (-0.47+0.25) && indexX-2.4*indexY <= (-0.48+0.015) && indexX-2.4*indexY >= (-0.48-0.015) && indexZ > 0) {	// draw beard left down
+			g.setColor(Color.black);
+		} else
+		if ( (0.47-0.25) <= indexX && indexX <= (0.47+0.25) && indexX+2.4*indexY <= (0.48+0.015) && indexX+2.4*indexY >= (0.48-0.015) && indexZ > 0) {	// draw beard right down
+			g.setColor(Color.black);
+		} else
+		if ( (-0.575-0.275) <= indexX && indexX <= (-0.575+0.275) && indexY <= (0.18+0.005) && indexY >= (0.18-0.005) && indexZ > 0) {	// draw beard left middle
+			g.setColor(Color.black);
+		} else
+		if ( (0.575-0.275) <= indexX && indexX <= (0.575+0.275) && indexY <= (0.18+0.005) && indexY >= (0.18-0.005) && indexZ > 0) {	// draw beard right middle
+			g.setColor(Color.black);
+		} else
+		if ( (-0.47-0.25) <= indexX && indexX <= (-0.47+0.25) && indexX+2.0*indexY <= (0.25+0.015) && indexX+2.0*indexY >= (0.25-0.015) && indexZ > 0) {	// draw beard left up
+			g.setColor(Color.black);
+		} else
+		if ( (0.47-0.25) <= indexX && indexX <= (0.47+0.25) && indexX-2.0*indexY <= (-0.25+0.015) && indexX-2.0*indexY >= (-0.25-0.015) && indexZ > 0) {	// draw beard right up
+			g.setColor(Color.black);
+		} else
 		if ( (0.23-Math.sqrt(0.006/1.5)) <= indexX && indexX <= (0.23) && indexX-indexY <= -0.375 && indexX-indexY >= -0.405 && indexZ > 0) {	// draw eyeball
 			g.setColor(Color.black);
 		} else
