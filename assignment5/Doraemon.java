@@ -1,0 +1,355 @@
+import java.awt.*;
+
+public class Doraemon extends BufferedApplet
+{
+	int width = 0;
+	int height = 0;
+	double f = 80;
+	double scale = 6;
+	double startTime = getTime();
+	double speed = 3;
+//	int headI = 100;
+	int headI = 150;
+	int bambooCopterI = 15;
+	int limbI = 30;
+	double bambooSize = 0.9;
+	double headSize = 10;
+	double bodySize = headSize * 0.7;
+	double limbSize = headSize * 0.2;
+   
+	Geometry bambooCopterLeft     = addNewGeometry();
+	Geometry bambooCopterRight    = addNewGeometry();
+	Geometry bambooCopterCenter   = addNewGeometry();
+	Geometry bambooCopterStick    = addNewGeometry();
+	Geometry bambooCopterBottom   = addNewGeometry();
+	Geometry head                 = addNewGeometry();
+	Geometry nose                 = addNewGeometry();
+//	Geometry collar               = addNewGeometry();
+	Geometry body                 = addNewGeometry();
+	Geometry armLeft              = addNewGeometry();
+	Geometry armRight             = addNewGeometry();
+	Geometry handLeft              = addNewGeometry();
+	Geometry handRight             = addNewGeometry();
+	Geometry legRight             = addNewGeometry();
+	Geometry legLeft              = addNewGeometry();
+	Geometry footRight             = addNewGeometry();
+	Geometry footLeft              = addNewGeometry();
+
+	public void render(Graphics g) {
+		double time = getTime() - startTime;
+		width = getWidth();
+		height = getHeight();
+		g.setColor(new Color(135, 206, 235));
+		g.fillRect(0,0,width,height);
+
+		bambooCopterLeft.cylinder(bambooCopterI);
+		bambooCopterRight.cylinder(bambooCopterI);
+		bambooCopterCenter.globe(bambooCopterI);
+		bambooCopterStick.cylinder(bambooCopterI);
+		bambooCopterBottom.globe(bambooCopterI);
+
+		head.globe(headI);
+		nose.globe(5);
+		body.cylinder(headI);
+//		collar.
+		armLeft.cylinder(limbI);
+		armRight.cylinder(limbI);
+		handLeft.globe(limbI);
+		handRight.globe(limbI);
+		legLeft.cylinder(limbI);
+		legRight.cylinder(limbI);
+		footLeft.globe(limbI);
+		footRight.globe(limbI);
+
+	   update(time,g);
+
+	}
+	   
+   public void update(double time, Graphics g) {
+      // CLEAR THE MATRIX STACK FOR THIS ANIMATION FRAME
+      mclear();
+      m().perspect(f);
+      m().rotateY(Math.sin(time)*0.5);
+      m().rotateY(time);
+      m().translate(0,0,headSize*2);
+      m().rotateY(-time);
+
+
+      // UPDATE THE bamboo Copter SHAPE
+      mpush();
+         m().translate(0, 20.0*bambooSize, 0);	// TRANSLATE THE BAMBOO COPTER TO THE TOP
+         mpush();
+         m().rotateY(speed*time*3.8);
+            mpush();
+               m().scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);
+               transformAndRender(bambooCopterCenter, m(), g, new Color(255, 215, 0));
+            mpop();
+            mpush();
+               m().rotateX(-Math.PI / 2); 
+               m().translate(0, 0, -(2.0+0.35)*bambooSize);
+               m().scale(0.2*bambooSize, 0.2*bambooSize, 2.0*bambooSize);
+               transformAndRender(bambooCopterStick, m(), g, new Color(255, 215, 0));
+            mpop();
+            mpush();
+               m().rotateY(-Math.PI / 2); // ORIENT THE left bamboo copter
+               m().translate(0, 0, (2.0+0.35)*bambooSize);
+               m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
+               transformAndRender(bambooCopterLeft, m(), g, new Color(255, 215, 0));
+            mpop();
+            mpush();
+               m().rotateY(Math.PI / 2); // ORIENT THE left bamboo copter
+               m().translate(0, 0, (2.0+0.35)*bambooSize);
+               m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
+               transformAndRender(bambooCopterRight, m(), g, new Color(255, 215, 0));
+            mpop();
+	 mpop();
+
+      // UPDATE THE HEAD SHAPE
+	 mpush();
+	    m().translate(0, (-4.0-0.35)*bambooSize-headSize, 0);
+            mpush();
+               m().scale(headSize, headSize, headSize);
+               drawHead(head, m(),g);
+            mpop();
+            // UPDATE THE BODY SHAPE
+	    mpush(); {
+	       m().translate(0, -headSize-bodySize*0.55*0.9, 0);
+               mpush(); {
+                  m().rotateX(Math.PI / 2);
+                  m().scale(bodySize, bodySize*0.5, bodySize*0.9);
+                  transformAndRender(body, m(),g, Color.blue);
+               mpop(); }
+	       // UPDATE ARMS
+	       mpush(); {
+	           m().translate(0,limbSize*2.4,0);
+		   // left
+		   mpush(); {
+		      m().translate( -bodySize, 0, 0);
+		      m().rotateZ(Math.sin(speed*time*2));
+		      mpush(); {
+                         m().rotateY(-Math.PI / 2);
+		         m().translate(0, 0, limbSize);
+                         m().scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
+                         transformAndRender(armLeft, m(),g, Color.blue);
+                      mpop(); }
+		         // UPDATE HAND
+		      mpush(); {
+		         m().translate(-limbSize*3,0,0);
+                         m().rotateX(Math.PI / 2);
+                         m().scale(limbSize, limbSize, limbSize);
+                         transformAndRender(handLeft, m(),g, Color.white);
+		      mpop(); }
+		   mpop(); }
+		   // right
+		   mpush(); {
+		      m().translate( bodySize, 0, 0);
+		      m().rotateZ(-Math.sin(speed*time*2));
+		      mpush(); {
+                         m().rotateY(Math.PI / 2);
+		         m().translate(0, 0, limbSize);
+                         m().scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
+                         transformAndRender(armLeft, m(),g, Color.blue);
+                      mpop(); }
+		         // UPDATE HAND
+		      mpush(); {
+		         m().translate(limbSize*3,0,0);
+                         m().rotateX(-Math.PI / 2);
+                         m().scale(limbSize, limbSize, limbSize);
+                         transformAndRender(handLeft, m(),g, Color.white);
+		      mpop(); }
+		   mpop(); }
+	       mpop(); }
+
+	       // UPDATE LEGS
+	       mpush(); {
+	           m().translate(0,-limbSize*4,0);
+		   // left
+		   mpush(); {
+		      m().translate( -bodySize*0.5, 0, 0);
+	//	      m().rotateZ(time);
+		         // UPDATE FOOT
+		      mpush(); {
+		         m().translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
+                         //m().rotateX(Math.PI / 2);
+                         m().scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
+                         transformAndRender(footLeft, m(),g, Color.white);
+		      mpop(); }
+		      mpush(); {
+                         m().rotateX(-Math.PI / 2);
+		         m().translate(0, 0, limbSize*0.6);
+                         m().scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
+                         transformAndRender(legLeft, m(),g, Color.blue);
+                      mpop(); }
+		   mpop(); }
+		   // right
+		   mpush(); {
+		      m().translate( bodySize*0.5, 0, 0);
+	//	      m().rotateZ(time);
+		         // UPDATE FOOT
+		      mpush(); {
+		         m().translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
+                         //m().rotateX(Math.PI / 2);
+                         m().scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
+                         transformAndRender(footRight, m(),g, Color.white);
+		      mpop(); }
+		      mpush(); {
+                         m().rotateX(-Math.PI / 2);
+		         m().translate(0, 0, limbSize*0.6);
+                         m().scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
+                         transformAndRender(legLeft, m(),g, Color.blue);
+                      mpop(); }
+		   mpop(); }
+		mpop(); }
+
+            mpop(); }
+
+	 mpop();
+      mpop();
+   }
+	   
+   public void transformAndRender(Geometry geo, Matrix m, Graphics g, Color color) {
+	   g.setColor(color);
+	   int draw[][] = new int[geo.vertices.length][geo.vertices[0].length];
+	   double temp[] = new double[4];
+	   for (int i=0; i<geo.vertices.length; i++) {
+		m.transform(geo.vertices[i],temp);
+		temp[0] = temp[0]/temp[3];
+		temp[1] = temp[1]/temp[3];
+		temp[2] = temp[2]/temp[3];
+		viewport(temp,draw[i]);
+	   }
+	   for (int i=0; i<geo.faces.length; i++){
+		for (int j=0; j<geo.faces[i].length; j++) {
+			if (j<geo.faces[i].length-1) {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][j+1]][0], (int)draw[geo.faces[i][j+1]][1]);
+			} else {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][0]][0], (int)draw[geo.faces[i][0]][1]);
+			}
+		}
+	   }
+   }
+
+   public void drawHead(Geometry geo, Matrix m, Graphics g) {
+	   g.setColor(Color.blue);
+	   int draw[][] = new int[geo.vertices.length][geo.vertices[0].length];
+	   double temp[] = new double[4];
+	   for (int i=0; i<geo.vertices.length; i++) {
+		m.transform(geo.vertices[i],temp);
+		temp[0] = temp[0]/temp[3];
+		temp[1] = temp[1]/temp[3];
+		temp[2] = temp[2]/temp[3];
+		viewport(temp,draw[i]);
+	   }
+	   for (int i=0; i<geo.faces.length; i++){
+//		double indexX = (geo.vertices[geo.faces[i][0]][0] + geo.vertices[geo.faces[i][1]][0] + geo.vertices[geo.faces[i][2]][0] + geo.vertices[geo.faces[i][3]][0]) / 4.0;
+//		double indexY = (geo.vertices[geo.faces[i][0]][1] + geo.vertices[geo.faces[i][1]][1] + geo.vertices[geo.faces[i][2]][1] + geo.vertices[geo.faces[i][3]][1]) / 4.0;
+//		double indexZ = (geo.vertices[geo.faces[i][0]][2] + geo.vertices[geo.faces[i][1]][2] + geo.vertices[geo.faces[i][2]][2] + geo.vertices[geo.faces[i][3]][2]) / 4.0;
+		double indexX = geo.vertices[geo.faces[i][0]][0];
+		double indexY = geo.vertices[geo.faces[i][0]][1];
+		double indexZ = geo.vertices[geo.faces[i][0]][2];
+		double leftEyeBallCo = Math.pow(indexX+0.15,2)*1.5 + Math.pow(indexY-0.6,2);
+		double mouthCo = Math.pow(indexX,2)*1.5 + Math.pow(indexY,2);
+		double leftEyeCo = Math.pow(indexX+0.23,2)*1.5 + Math.pow(indexY-0.6,2);
+		double rightEyeCo = Math.pow(indexX-0.23,2)*1.5 + Math.pow(indexY-0.6,2);
+		double faceCo = Math.pow(indexX,2) + Math.pow(indexY+0.2,2);
+		if ( (0.23-Math.sqrt(0.006/1.5)) <= indexX && indexX <= (0.23) && indexX-indexY <= -0.375 && indexX-indexY >= -0.405 && indexZ > 0) {	// draw eyeball
+			g.setColor(Color.black);
+		} else
+		if ( (0.23) <= indexX && indexX <= (0.23+Math.sqrt(0.006/1.5)) && indexX+indexY >= 0.835 && indexX+indexY <= 0.865 && indexZ > 0) {	// draw eyeball
+			g.setColor(Color.black);
+		} else
+		if ( leftEyeBallCo <= 0.006 && indexZ > 0) {	// draw eyeball
+			g.setColor(Color.black);
+		} else
+		if ( 0.06 < leftEyeCo && leftEyeCo <= 0.07 && indexZ > 0) {	// draw eyes
+			g.setColor(Color.black);
+		} else
+		if ( leftEyeCo < 0.07 && indexZ > 0) {
+			g.setColor(Color.white);
+		} else
+		if ( 0.06 < rightEyeCo && rightEyeCo <= 0.07 && indexZ > 0) {
+			g.setColor(Color.black);
+		} else
+		if ( rightEyeCo < 0.07 && indexZ > 0) {
+			g.setColor(Color.white);
+		} else
+		if ( -0.01 <= indexX && indexX <= 0.01 && -0 <= indexY && indexY <= 0.4 && indexZ > 0) {	// draw nose line
+			g.setColor(Color.black);
+		} else
+		if (  mouthCo <= 0.4 && indexY < -0 && indexZ > 0) {	// draw mouth
+			g.setColor(Color.red);
+		} else
+		if (  0.68 < faceCo && faceCo <= 0.7 && indexZ > 0) {	// draw face
+			g.setColor(Color.black);
+		} else
+		if ( faceCo <= 0.7 && indexZ > 0) {
+			g.setColor(Color.white);
+		}
+		else {
+			g.setColor(Color.blue);
+		}
+		for (int j=0; j<geo.faces[i].length; j++) {
+			if (j<geo.faces[i].length-1) {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][j+1]][0], (int)draw[geo.faces[i][j+1]][1]);
+			} else {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][0]][0], (int)draw[geo.faces[i][0]][1]);
+			}
+		}
+	   }
+   }
+
+   public Geometry addNewGeometry () {
+	   Geometry temp = new Geometry();
+	   return temp;
+   }
+   // ALL ABOUT STACK **************
+   final static int MATRIX_STACK_SIZE = 100;
+   int matrixStackTop = 0;
+   Matrix matrixStack[] = new Matrix[MATRIX_STACK_SIZE];
+   {
+      for (int n = 0 ; n < MATRIX_STACK_SIZE ; n++)
+         matrixStack[n] = new Matrix();
+   }
+   // CLEAR THE STACK BEFORE PROCESSING THIS ANIMATION FRAME
+   public void mclear() {
+      matrixStackTop = 0;
+      matrixStack[0].identity();
+   }
+   // PUSH/COPY THE MATRIX ON TOP OF THE STACK -- RETURN false IF OVERFLOW
+   public boolean mpush() {
+      if (matrixStackTop + 1 >= MATRIX_STACK_SIZE)
+	 return false;
+      matrixStack[matrixStackTop + 1].copy(matrixStack[matrixStackTop]);
+      matrixStackTop++;
+      return true;
+   }
+   // POP OFF THE MATRIX ON TOP OF THE STACK -- RETURN false IF UNDERFLOW
+   public boolean mpop() {
+      if (matrixStackTop <= 0)
+	 return false;
+      --matrixStackTop;
+      return true;
+   }
+   // RETURN THE MATRIX CURRENTLY ON TOP OF THE STACK
+   public Matrix m() {
+      return matrixStack[matrixStackTop];
+   }
+   // STACK END************
+
+	double getTime() {
+		return System.currentTimeMillis() / 1000.0;
+	}
+	public void viewport(double src[], int dst[]) {
+		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
+		dst[1] = (int) ( 0.5 * height - src[1] * scale );
+	}
+	public int[] coTransform(double middle[], double a, double b) {
+		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
+		return array;
+	}
+	public int[] coTransform(int middle[], double a, double b) {
+		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
+		return array;
+	}
+}
+

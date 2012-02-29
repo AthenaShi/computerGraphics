@@ -1,0 +1,170 @@
+import java.awt.*;
+
+public class Test extends BufferedApplet
+{
+	int width = 0;
+	int height = 0;
+	double scale = 1;
+	double startTime = getTime();
+	double speed = 1;
+	double r = 100;	// acctual r = 100/scale
+   
+	Geometry torso        = addNewGeometry();
+	//Geometry torso        = new Geometry();
+	Geometry head         = addNewGeometry();
+	Geometry leftUpperArm = addNewGeometry();
+	Geometry leftLowerArm = addNewGeometry();
+
+	public void render(Graphics g) {
+		double time = getTime() - startTime;
+		width = getWidth();
+		height = getHeight();
+	//	scale = width / 2;
+		g.setColor(Color.white);
+		g.fillRect(0,0,width,height);
+
+		g.setColor(Color.black);
+		
+
+		torso.cylinder(16);
+		head.globe(16, 8);
+		leftUpperArm.cylinder(8);
+		leftLowerArm.cylinder(8);
+
+	   update(time,g);
+
+	}
+	   
+   public void update(double time, Graphics g) {
+      // CLEAR THE MATRIX STACK FOR THIS ANIMATION FRAME
+      mclear();
+      m().rotateY(time);
+      m().scale(50, 50, 50);
+      
+      // UPDATE THE TORSO SHAPE
+      mpush();
+         m().rotateX(-Math.PI / 2); // ORIENT THE TORSO CYLINDER UPRIGHT
+         m().scale(0.9, 0.7, 1);
+         //m().scale(0.9, 0.7, 1);
+         m().translate(0, 0, 1);
+         transformAndRender(torso, m(),g);
+      mpop();
+
+      mpush();
+         // TRANSLATE CURRENT POSITION TO THE NECK JOINT
+         m().translate(0, 2, 0);
+         // ANY CODE TO NOD OR SHAKE THE HEAD WOULD GO JUST AFTER THIS COMMENT
+         // UPDATE THE HEAD SHAPE
+
+         mpush();
+            m().translate(0, 1, 0);        // TRANSLATE THE HEAD UP, OFF OF THE TORSO
+            m().scale(0.5, 0.7, 0.5);      // SCALE THE HEAD INTO AN ELLIPSOID SHAPE
+            transformAndRender(torso, m(),g);
+         mpop();
+
+      mpop();
+
+      mpush();
+         // TRANSLATE CURRENT POSITION TO THE LEFT SHOULDER JOINT
+	 m().translate(1, 2, 0);
+	 // ROTATE ABOUT THE LEFT SHOULDER JOINT
+	 m().rotateZ(Math.PI / 4 * Math.sin(3 * time));
+	 // UPDATE THE LEFT UPPER ARM SHAPE
+
+	 mpush();
+	    m().rotateY(Math.PI / 2); // UPPER ARM STICKS OUT TO THE RIGHT
+	    m().scale(0.2, 0.2, 2);
+	    m().translate(0, 0, 1);
+            transformAndRender(leftUpperArm, m(),g);
+	 mpop();
+
+	 // TRANSLATE CURRENT POSITION TO THE LEFT ELBOW JOINT
+	 m().translate(2, 0, 0);
+	 // ROTATE ABOUT THE LEFT ELBOW JOINT
+	 m().rotateZ(Math.PI / 4 * (1 + Math.sin(3 * time)));
+	 // UPDATE THE LEFT LOWER ARM SHAPE
+
+	 mpush();
+	    m().rotateY(Math.PI / 2); // LOWER ARM STICKS OUT TO THE RIGHT
+	    m().scale(0.2, 0.2, 2);
+	    m().translate(0, 0, 1);
+            transformAndRender(leftLowerArm, m(),g);
+	 mpop();
+      mpop();
+   }
+	   
+   public void transformAndRender(Geometry geo, Matrix m, Graphics g) {
+	  // Graphics g;
+	   g.setColor(Color.black);
+	   int draw[][] = new int[geo.vertices.length][geo.vertices[0].length];
+	   double temp[] = new double[4];
+	   for (int i=0; i<geo.vertices.length; i++) {
+		m.transform(geo.vertices[i],temp);
+		viewport(temp,draw[i]);
+	   }
+	   for (int i=0; i<geo.faces.length; i++){
+		for (int j=0; j<geo.faces[i].length; j++) {
+			if (j<geo.faces[i].length-1) {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][j+1]][0], (int)draw[geo.faces[i][j+1]][1]);
+			} else {
+				g.drawLine((int)draw[geo.faces[i][j]][0], (int)draw[geo.faces[i][j]][1], (int)draw[geo.faces[i][0]][0], (int)draw[geo.faces[i][0]][1]);
+			}
+		}
+	   }
+   }
+
+   public Geometry addNewGeometry () {
+	   Geometry temp = new Geometry();
+	   return temp;
+   }
+   // ALL ABOUT STACK **************
+   final static int MATRIX_STACK_SIZE = 100;
+   int matrixStackTop = 0;
+   Matrix matrixStack[] = new Matrix[MATRIX_STACK_SIZE];
+   {
+      for (int n = 0 ; n < MATRIX_STACK_SIZE ; n++)
+         matrixStack[n] = new Matrix();
+   }
+   // CLEAR THE STACK BEFORE PROCESSING THIS ANIMATION FRAME
+   public void mclear() {
+      matrixStackTop = 0;
+      matrixStack[0].identity();
+   }
+   // PUSH/COPY THE MATRIX ON TOP OF THE STACK -- RETURN false IF OVERFLOW
+   public boolean mpush() {
+      if (matrixStackTop + 1 >= MATRIX_STACK_SIZE)
+	 return false;
+      matrixStack[matrixStackTop + 1].copy(matrixStack[matrixStackTop]);
+      matrixStackTop++;
+      return true;
+   }
+   // POP OFF THE MATRIX ON TOP OF THE STACK -- RETURN false IF UNDERFLOW
+   public boolean mpop() {
+      if (matrixStackTop <= 0)
+	 return false;
+      --matrixStackTop;
+      return true;
+   }
+   // RETURN THE MATRIX CURRENTLY ON TOP OF THE STACK
+   public Matrix m() {
+      return matrixStack[matrixStackTop];
+   }
+   // STACK END************
+
+	double getTime() {
+		return System.currentTimeMillis() / 1000.0;
+	}
+	public void viewport(double src[], int dst[]) {
+		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
+		dst[1] = (int) ( 0.5 * height - src[1] * scale );
+	}
+	public int[] coTransform(double middle[], double a, double b) {
+		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
+		return array;
+	}
+	public int[] coTransform(int middle[], double a, double b) {
+		int array[] = { (int)(middle[0]-a), (int)(middle[1]-b), (int)(2*a), (int)(2*b) };
+		return array;
+	}
+}
+
