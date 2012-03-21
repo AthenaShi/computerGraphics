@@ -1,6 +1,45 @@
+import java.util.ArrayList;
+
 public class Geometry {
 	double vertices[][];
 	int faces[][];
+	int draw[][];
+	int what = 0;
+	ArrayList<Geometry> children = new ArrayList<Geometry>();
+	Matrix globalMatrix = new Matrix();
+	Matrix relativeMatrix = new Matrix();
+
+	public Geometry() {
+		globalMatrix.identity();
+		relativeMatrix.identity();
+	} 
+
+/*	public void asWorld() {
+		globalMatrix.identity();
+		relativeMatrix.identity();
+	} */
+
+	public Matrix getMatrix() {
+		return relativeMatrix;
+	}
+
+	public Geometry add() {
+		Geometry Child = new Geometry();
+		children.add(Child);
+		return Child;
+	}
+
+	public void remove(Geometry Child) {
+		children.remove(Child);
+	}
+
+	public int getNumChildren() {
+		return children.size();
+	}
+
+	public Geometry getChild(int index) {
+		return children.get(index);
+	}	
 
 	public void copy(double vertice[][], int face[][]) {			// copy Matrix
 		for (int row = 0; row < vertices.length ; row++)
@@ -20,15 +59,8 @@ public class Geometry {
 				{1,1,1,1},{-1,1,1,1},{-1,-1,1,1},{1,-1,1,1},	// front face
 				{1,1,1,1},{1,-1,1,1},{1,-1,-1,1},{1,1,-1,1},	// right face
 		};
-	/*	vertices = new double[][] {	// all vertices in one face are counterclockwise
-				{0,0,0,1},{1,0,0,1},{1,0,1,1},{0,0,1,1},	// low face
-				{0,0,0,1},{0,1,0,1},{1,1,0,1},{1,0,0,1},	// back face
-				{0,0,0,1},{0,0,1,1},{0,1,1,1},{0,1,0,1},	// left face
-				{1,1,1,1},{1,1,0,1},{0,1,0,1},{0,1,1,1},	// up face
-				{1,1,1,1},{0,1,1,1},{0,0,1,1},{1,0,1,1},	// front face
-				{1,1,1,1},{1,0,1,1},{1,0,0,1},{1,1,0,1},	// right face
-		}; */
 		faces = new int[][] { {0,1,2,3},{4,5,6,7},{8,9,10,11},{12,13,14,15},{16,17,18,19},{20,21,22,23} };
+		draw = new int[24][4];
 	}	// by default it just give a unit cube
 
 	public void globe (int m) {
@@ -37,6 +69,7 @@ public class Geometry {
 	public void globe(int m, int n) {
 		vertices = new double[(m+1)*(n+1)][4];
 		faces = new int[m*n][4];
+		draw = new int[(m+1)*(n+1)][4];
 		for (int i=0; i<m+1; i++) {
 			for (int j=0; j<n+1; j++) {
 				double theta = 2.0*Math.PI*i/m;
@@ -83,6 +116,7 @@ public class Geometry {
 	public void cylinder(int n, int z, int r) {
 		vertices = new double[(n+1)*(z+1)+2*(n+1)*(r+1)][4];
 		faces = new int[n*z+2*n*r][4];
+		draw = new int[(n+1)*(z+1)+2*(n+1)*(r+1)][4];
 		// tubular side
 		for (int i=0; i<n+1; i++) {
 			for (int j=0; j<z+1; j++) {

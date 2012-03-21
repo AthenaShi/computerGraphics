@@ -73,71 +73,78 @@ public class Doraemon extends BufferedApplet
 
       // UPDATE THE bamboo Copter SHAPE
       mpush();
-         m().translate(0, 20.0*bambooSize, 0);	// TRANSLATE THE BAMBOO COPTER TO THE TOP
-         mpush();
-         m().rotateY(speed*time*3.1);
+         m().translate(0, 20.0*bambooSize, 0);	// TRANSLATE THE BAMBOO COPTER TO THE TOP	// all!!!---
+         mpush(); {
+            m().rotateY(speed*time*3.1);	// bambooCopter!!!---
             mpush();
-               m().scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);
+               m().scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);			// bambooCopterCenter!!!---
                transformAndRender(bambooCopterCenter, m(), g, bamboo);
             mpop();
             mpush();
-               m().rotateX(-Math.PI / 2); 
-               m().translate(0, 0, -(2.0+0.35)*bambooSize);
+               m().rotateX(-Math.PI / 2);
+	       m().translate(0, 0, -(2.0+0.35)*bambooSize);
                m().scale(0.2*bambooSize, 0.2*bambooSize, 2.0*bambooSize);
+	       // bambooCopterStick!!!---
                transformAndRender(bambooCopterStick, m(), g, bamboo);
             mpop();
             mpush();
-               m().rotateY(-Math.PI / 2); // ORIENT THE left bamboo copter
+               m().rotateY(-Math.PI / 2); // ORIENT THE left bamboo copter			// bambooCopterLeft!!!---
                m().translate(0, 0, (2.0+0.35)*bambooSize);
                m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
                transformAndRender(bambooCopterLeft, m(), g, bamboo);
             mpop();
             mpush();
-               m().rotateY(Math.PI / 2); // ORIENT THE left bamboo copter
+               m().rotateY(Math.PI / 2); // ORIENT THE right bamboo copter			// bambooCopterRight!!!---
                m().translate(0, 0, (2.0+0.35)*bambooSize);
                m().scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
                transformAndRender(bambooCopterRight, m(), g, bamboo);
             mpop();
-	 mpop();
+	 mpop(); }
 
       // UPDATE THE HEAD SHAPE
 	 mpush();
-	    m().translate(0, (-4.0-0.35)*bambooSize-headSize, 0);
+	    m().translate(0, (-4.0-0.35)*bambooSize-headSize, 0);				// neck!!!---	
             mpush();
                m().scale(headSize, headSize, headSize);
+	  		// head!!!---
                drawHead(head, m(),g);
             mpop();
             mpush();	// nose
 	       m().translate(0, 0.4*headSize, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.4*headSize,2)) );
                m().scale(headSize*0.1, headSize*0.1, headSize*0.1);
+	       		// nose!!!---
                transformAndRender(nose, m(),g, Color.red);
             mpop();
 
             // UPDATE THE BODY SHAPE
 	    mpush(); {
 	       m().translate(0, -headSize-bodySize*0.55*0.9, 0);
+	       		// body!!!---
                mpush(); {
                   m().rotateX(-Math.PI / 2);
                   m().scale(bodySize, bodySize*0.5, bodySize*0.9);
+		  	// torso!!!---
                   drawBody(body, m(),g);
                mpop(); }
             mpush();	// bell
 	       m().translate( 0, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.85*headSize,2)),0.85*headSize );
                m().scale(headSize*0.1, headSize*0.1, headSize*0.1);
+	       		// bell!!!---
                transformAndRender(nose, m(),g, Color.yellow);
             mpop();
 
 	       // UPDATE ARMS
 	       mpush(); {
 	           m().translate(0,limbSize*2.4,0);
-		   // left
+		   // shoulderLeft!!! AND shoulderRight!!!---
 		   mpush(); {
 		      m().translate( -bodySize, 0, 0);
 		      m().rotateZ(Math.sin(speed*time*2));
+		      // shoulderLeft!!!---
 		      mpush(); {
                          m().rotateY(-Math.PI / 2);
 		         m().translate(0, 0, limbSize);
-                         m().scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
+                         m().scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);			// armLeft!!!---
                          transformAndRender(armLeft, m(),g, Color.blue);
                       mpop(); }
 		         // UPDATE HAND
@@ -145,6 +152,7 @@ public class Doraemon extends BufferedApplet
 		         m().translate(-limbSize*3,0,0);
                          m().rotateX(Math.PI / 2);
                          m().scale(limbSize, limbSize, limbSize);
+			 // handLeft!!!---
                          transformAndRender(handLeft, m(),g, Color.white);
 		      mpop(); }
 		   mpop(); }
@@ -152,10 +160,12 @@ public class Doraemon extends BufferedApplet
 		   mpush(); {
 		      m().translate( bodySize, 0, 0);
 		      m().rotateZ(-Math.sin(speed*time*2));
+		      // shoulderRight!!!---
 		      mpush(); {
                          m().rotateY(Math.PI / 2);
 		         m().translate(0, 0, limbSize);
                          m().scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
+			 // armRight!!!---
                          transformAndRender(armLeft, m(),g, Color.blue);
                       mpop(); }
 		         // UPDATE HAND
@@ -163,6 +173,7 @@ public class Doraemon extends BufferedApplet
 		         m().translate(limbSize*3,0,0);
                          m().rotateX(-Math.PI / 2);
                          m().scale(limbSize, limbSize, limbSize);
+			 // handRight!!!---
                          transformAndRender(handLeft, m(),g, Color.white);
 		      mpop(); }
 		   mpop(); }
@@ -171,36 +182,42 @@ public class Doraemon extends BufferedApplet
 	       // UPDATE LEGS
 	       mpush(); {
 	           m().translate(0,-limbSize*4,0);
+		   // hipLeft!!! AND hipRight!!!
 		   // left
 		   mpush(); {
 		      m().translate( -bodySize*0.5, 0, 0);
+		      // hipLeft!!!---
 		         // UPDATE FOOT
 		      mpush(); {
 		         m().translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
-                         //m().rotateX(Math.PI / 2);
                          m().scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
+			 // footLeft!!!---
                          transformAndRender(footLeft, m(),g, Color.white);
 		      mpop(); }
 		      mpush(); {
                          m().rotateX(-Math.PI / 2);
 		         m().translate(0, 0, limbSize*0.6);
                          m().scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
+			 // legLeft!!!---
                          transformAndRender(legLeft, m(),g, Color.blue);
                       mpop(); }
 		   mpop(); }
 		   // right
 		   mpush(); {
 		      m().translate( bodySize*0.5, 0, 0);
+		      // hipRight!!!---
 		         // UPDATE FOOT
 		      mpush(); {
 		         m().translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
                          m().scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
+			 // footRight!!!---
                          transformAndRender(footRight, m(),g, Color.white);
 		      mpop(); }
 		      mpush(); {
                          m().rotateX(-Math.PI / 2);
 		         m().translate(0, 0, limbSize*0.6);
                          m().scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
+			 // legRight!!!---
                          transformAndRender(legLeft, m(),g, Color.blue);
                       mpop(); }
 		   mpop(); }
