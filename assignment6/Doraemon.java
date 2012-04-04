@@ -4,18 +4,18 @@ public class Doraemon extends BufferedApplet
 {
 	int width = 0;
 	int height = 0;
-	double f = 80;
+	double f = 1500;
 	double scale = 6;
 	double startTime = getTime();
 	double speed = 3.1;
-//	int torsoI = 110;
-//	int headI = 210;
-	int torsoI = 50;
-	int headI = 100;
+	double moveSpeed = 0.5;
+	int torsoI = 110;
+	int headI = 210;
+//	int torsoI = 50;
+//	int headI = 100;
 	int bambooCopterI = 15;
 	int limbI = 50;
 	double bambooSize = 0.9;
-	//double bambooSize = 4.0;
 	double headSize = 10;
 	double torsoSize = headSize * 0.7;
 	double limbSize = headSize * 0.2;
@@ -25,7 +25,65 @@ public class Doraemon extends BufferedApplet
 	Matrix m = new Matrix();
 	Matrix tempM = new Matrix();
 	Color chooseC = Color.blue;
-  
+	boolean copter = false;
+	// movement!!!!!!!
+	double moveShoulderX[][] = { 
+		{0*moveSpeed,0}, 
+		{1*moveSpeed,Math.PI/5}, 
+		{3*moveSpeed,-Math.PI/5}, 
+		{5*moveSpeed,Math.PI/5}, 
+		{7*moveSpeed,-Math.PI/5}, 
+		{8*moveSpeed,0},
+		{29*moveSpeed,0}, 
+		{30*moveSpeed,Math.PI/5}, 
+		{32*moveSpeed,-Math.PI/5}, 
+		{34*moveSpeed,Math.PI/5}, 
+		{36*moveSpeed,-Math.PI/5}, 
+		{37*moveSpeed,0},
+	};
+	Movement MoveShoulder1 = new Movement(moveShoulderX);
+	double rotShoulder1;
+
+	double moveShoulderZ[][] = { 
+		{8.5*moveSpeed,Math.PI/5}, 
+		{9.5*moveSpeed, Math.PI/5.5},
+		{10.5*moveSpeed, Math.PI/5}, 
+		{11.5*moveSpeed,Math.PI},
+		{12.5*moveSpeed,0},
+
+		{14.5*moveSpeed,Math.PI-Math.PI/6},
+		{16.5*moveSpeed,Math.PI+Math.PI/6},
+		{18.5*moveSpeed,Math.PI-Math.PI/6},
+		{20.5*moveSpeed,Math.PI+Math.PI/6},
+		{22.5*moveSpeed,Math.PI-Math.PI/6},
+		{24.5*moveSpeed,Math.PI+Math.PI/6},
+
+		{26.5*moveSpeed,Math.PI},
+		{27.5*moveSpeed,Math.PI/5},
+		{28.5*moveSpeed,0}
+
+	};
+	Movement MoveShoulder2 = new Movement(moveShoulderZ);
+	double rotShoulder2;
+
+	double moveAll[][] = { 
+		{11.5*moveSpeed,0}, 
+		{15.5*moveSpeed,10},
+		{20.5*moveSpeed,10}, 
+		{25.5*moveSpeed,0} 
+	};
+	Movement MoveAll = new Movement(moveAll);
+	double moveAllY;
+
+	double moveBody[][] = { 
+		{11.5*moveSpeed,0}, 
+		{15.5*moveSpeed,Math.PI/10},
+		{20.5*moveSpeed,Math.PI/10}, 
+		{25.5*moveSpeed,0} 
+	};
+	Movement MoveBody = new Movement(moveBody);
+	double rotBodyX;
+
 	Geometry bambooCopterLeft, bambooCopterRight, bambooCopterCenter,
 		 bambooCopterStick, head, nose, torso, bell, armLeft, armRight, 
 		 handLeft, handRight, legRight, legLeft, 
@@ -35,6 +93,7 @@ public class Doraemon extends BufferedApplet
 
 	public Doraemon() {
 		initialize();
+
 	}
 
 	public void render(Graphics g) {
@@ -43,13 +102,14 @@ public class Doraemon extends BufferedApplet
 		height = getHeight();
 		g.setColor(background);
 		g.fillRect(0,0,width,height);
+	//	grass
+		g.setColor(Color.green);
+		g.fillRect(0,height/3,width,height*2/3);
 
 		animate(time);
 		// traverse and draw
 		world.globalMatrix.identity();
 		drawIt(all, world.globalMatrix, g);
-//		im.identity();
-//		drawIt(all, im, g);
 	}
 	public void drawIt(Geometry object, Matrix matrix, Graphics g) {
 		int childNumber = object.getNumChildren();
@@ -93,38 +153,28 @@ public class Doraemon extends BufferedApplet
 	public void initialize() {
 		world		= getWorld();
 		all		= world.add();
-		bambooCopter	= all.add();
-		bambooCopterLeft	= bambooCopter.add();
-		bambooCopterRight	= bambooCopter.add();
-		bambooCopterStick	= bambooCopter.add();	
-		bambooCopterCenter	= bambooCopter.add();
-		neck		= all.add();
+		body		= all.add();
+
+		shoulderRight	= body.add();
+		hipRight	= body.add(); 
+		armRight	= shoulderRight.add();
+		handRight	= shoulderRight.add();
+		legRight	= hipRight.add();
+		footRight	= hipRight.add();
+
+		neck		= body.add();
 		head		= neck.add();
 		nose		= neck.add();
-		body		= neck.add();
 		torso		= body.add();
 		bell		= body.add();
-		shoulderLeft	= body.add();
-		shoulderRight	= body.add();
-		hipLeft		= body.add();
-		hipRight	= body.add(); 
-		armLeft		= shoulderLeft.add();
-		armRight	= shoulderRight.add();
-		handLeft	= shoulderLeft.add();
-		handRight	= shoulderRight.add();
-		legLeft		= hipLeft.add();
-		legRight	= hipRight.add();
-		footLeft	= hipLeft.add();
-		footRight	= hipRight.add(); 
 
-		bambooCopterLeft.cylinder(bambooCopterI);	// what = 1
-		bambooCopterLeft.what = 1;
-		bambooCopterRight.cylinder(bambooCopterI);	// what = 1
-		bambooCopterRight.what = 1;
-		bambooCopterCenter.globe(bambooCopterI);	// what = 1
-		bambooCopterCenter.what = 1;
-		bambooCopterStick.cylinder(bambooCopterI);	// what = 1	bamboo
-		bambooCopterStick.what = 1;
+		shoulderLeft	= body.add();
+		hipLeft		= body.add();
+		armLeft		= shoulderLeft.add();
+		handLeft	= shoulderLeft.add();
+		legLeft		= hipLeft.add();
+		footLeft	= hipLeft.add();
+
 		head.globe(headI);				// what = 2
 		head.what = 2;
 		nose.globe(25);					// what = 3	red
@@ -145,46 +195,14 @@ public class Doraemon extends BufferedApplet
 		footLeft.what = 6;
 		footRight.globe(limbI);				// what = 6	white
 		footRight.what = 6;
-	
-		m = bambooCopterCenter.getMatrix();// bambooCopterCenter!!!
-		m.printMatrix(m);
-		System.out.println();
-		m.scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);
-		m.printMatrix(m);
-		System.out.println();
-
-		m = bambooCopterStick.getMatrix();
-		m.printMatrix(m);
-		System.out.println();
-		m.rotateX(-Math.PI / 2); 	// bambooCopterStick!!!
-		m.translate(0, 0, -(2.0+0.35)*bambooSize);
-		m.scale(0.2*bambooSize, 0.2*bambooSize, 2.0*bambooSize);
-		m.printMatrix(m);
-		System.out.println();
-
-		m = bambooCopterLeft.getMatrix();
-		m.printMatrix(m);
-		System.out.println();
-		m.rotateY(Math.PI / 2); 	// bambooCopterLeft!!!
-		m.translate(0, 0, (2.0+0.35)*bambooSize);
-		m.scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
-		m.printMatrix(m);
-		System.out.println();
-
-		m = bambooCopterRight.getMatrix();
-		m.printMatrix(m);
-		System.out.println();
-		m.rotateY(-Math.PI / 2); 	// bambooCopterLeft!!!
-		m.translate(0, 0, (2.0+0.35)*bambooSize);
-		m.scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
-		m.printMatrix(m);
-		System.out.println();
 
 		m = head.getMatrix();		// head!!!
+		m.translate(0,headSize,0);
 		m.scale(headSize, headSize, headSize);
 
 		m = nose.getMatrix();		// nose!!!
 		m.translate(0, 0.4*headSize, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.4*headSize,2)) );
+		m.translate(0,headSize,0);
 		m.scale(headSize*0.1, headSize*0.1, headSize*0.1);
 
 		m = torso.getMatrix();		// torso!!!
@@ -192,92 +210,152 @@ public class Doraemon extends BufferedApplet
 		m.scale(torsoSize, torsoSize*0.5, torsoSize*0.9);
 
 		m = bell.getMatrix();		// bell!!!
-		m.translate( 0, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.85*headSize,2)),0.85*headSize );
+		m.translate( 0, Math.sqrt(Math.pow(1.0*headSize,2)-Math.pow(0.85*headSize,2)),0.85*headSize/2 );
 		m.scale(headSize*0.1, headSize*0.1, headSize*0.1);
 
 		m = armLeft.getMatrix();		// armLeft!!!
-		m.rotateY(-Math.PI / 2);
-		m.translate(0, 0, limbSize);
+		m.rotateX(Math.PI / 2);
+		m.translate(0, 0, 1.6*limbSize);
 		m.scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
 
 		m = handLeft.getMatrix();		// handLeft!!!
-		m.translate(-limbSize*3,0,0);
+		m.translate(0,-limbSize-3.2*limbSize,0);
                 m.rotateX(Math.PI / 2);
                 m.scale(limbSize, limbSize, limbSize);
 
 		m = armRight.getMatrix();		// armRight!!!
-		m.rotateY(Math.PI / 2);
-		m.translate(0, 0, limbSize);
+		m.rotateX(Math.PI / 2);
+		m.translate(0, 0, 1.6*limbSize);
 		m.scale(limbSize*0.6, limbSize*0.6, 1.6*limbSize);
 
 		m = handRight.getMatrix();		// handRight!!!
-		m.translate(limbSize*3,0,0);
-                m.rotateX(-Math.PI / 2);
+		m.translate(0,-limbSize-3.2*limbSize,0);
+                m.rotateX(Math.PI / 2);
                 m.scale(limbSize, limbSize, limbSize);
 
 		m = footLeft.getMatrix();		// footLeft!!!
-		m.translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
+		m.translate( 0,-limbSize*0.8-limbSize*0.6,limbSize*0.5);
                 m.scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
 
 		m = legLeft.getMatrix();		// legLeft!!!
 		m.rotateX(-Math.PI / 2);
-		m.translate(0, 0, limbSize*0.6);
+		m.translate(0, 0, -limbSize*0.6);
                 m.scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
 
 		m = footRight.getMatrix();		// footLeft!!!
-		m.translate( 0,-limbSize*0.4*0.6,limbSize*0.5);
+		m.translate( 0,-limbSize*0.8-limbSize*0.6,limbSize*0.5);
                 m.scale(limbSize*1.9, limbSize*0.8, limbSize*2.3);
 
 		m = legRight.getMatrix();		// legRight!!!
 		m.rotateX(-Math.PI / 2);
-		m.translate(0, 0, limbSize*0.6);
+		m.translate(0, 0, -limbSize*0.6);
                 m.scale(limbSize*1.64, limbSize*1.64, limbSize*0.6);
 	}
 
 	public void animate(double time) {
 		m = all.getMatrix();			// all!!!
 		m.identity();
-		m.perspect(f);
-		m.rotateY(Math.sin(time)*0.2);
-		m.rotateY(time);
-		m.translate(0,0,headSize*2);
-		m.rotateY(-time);
-		m.translate(0, 20.0*bambooSize, 0);
-	//	m.translate(0, 1.0*bambooSize, 0); 
+		//m.perspect(f);
+		m.rotateY(Math.PI/6);
 
-		m = bambooCopter.getMatrix();			// bambooCopter!!!
-		m.identity();
-		m.rotateY(speed*time*3.1);
+		if (time >= 11.5*moveSpeed && !copter) {
+			//bambooCopter = all.add();
+			bambooCopter = body.add();
+			bambooCopterLeft	= bambooCopter.add();
+			bambooCopterRight	= bambooCopter.add();
+			bambooCopterStick	= bambooCopter.add();	
+			bambooCopterCenter	= bambooCopter.add();
+			bambooCopterLeft.cylinder(bambooCopterI);	// what = 1
+			bambooCopterLeft.what = 1;
+			bambooCopterRight.cylinder(bambooCopterI);	// what = 1
+			bambooCopterRight.what = 1;
+			bambooCopterCenter.globe(bambooCopterI);	// what = 1
+			bambooCopterCenter.what = 1;
+			bambooCopterStick.cylinder(bambooCopterI);	// what = 1	bamboo
+			bambooCopterStick.what = 1;
+
+			m = bambooCopterCenter.getMatrix();// bambooCopterCenter!!!
+			m.translate(0,(4.0+0.35)*bambooSize,0);
+			m.scale(0.35*bambooSize, 0.35*bambooSize, 0.35*bambooSize);
+
+			m = bambooCopterStick.getMatrix();
+			m.rotateX(Math.PI / 2); 	// bambooCopterStick!!!
+			m.translate(0, 0, -2.0*bambooSize);
+			m.scale(0.2*bambooSize, 0.2*bambooSize, 2.0*bambooSize);
+
+			m = bambooCopterLeft.getMatrix();
+			m.translate((2.0+0.35)*bambooSize,(4.0+0.35)*bambooSize,0);
+			m.rotateY(Math.PI / 2); 	// bambooCopterLeft!!!
+			m.scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
+
+			m = bambooCopterRight.getMatrix();
+			m.translate(-(2.0+0.35)*bambooSize,(4.0+0.35)*bambooSize,0);
+			m.rotateY(-Math.PI / 2); 	// bambooCopterRight!!!
+			m.scale(0.25*bambooSize, 0.25*bambooSize, 2.0*bambooSize);
+
+			copter = true;
+		}
+		if (time >= 26.5*moveSpeed && copter) {
+			copter = false;
+			//all.remove(bambooCopter);
+			body.remove(bambooCopter);
+		}
+		if (copter) {
+			m = bambooCopter.getMatrix();			// bambooCopter!!!
+			m.identity();
+			m.rotateY(speed*time*3.1);
+			m.translate(0, headSize*2+4*bambooSize, 0);
+
+			m = all.getMatrix();			// all!!!
+			m.identity();
+			//m.perspect(f);
+			m.rotateY(Math.PI/6);
+			moveAllY = MoveAll.getMove(time);
+			m.translate(0,moveAllY,0);
+
+			m = body.getMatrix();			// body!!!
+			m.identity();
+			rotBodyX = MoveBody.getMove(time);
+			m.rotateX(rotBodyX);
+		} else {
+			m = body.getMatrix();			// body!!!
+			m.identity();
+		}
 
 		m = neck.getMatrix();			// neck!!!
 		m.identity();
-		m.translate(0, (-4.0-0.35)*bambooSize-headSize, 0);
-
-		m = body.getMatrix();			// body!!!
-		m.identity();
-		m.translate(0, -headSize-torsoSize*0.55*0.9, 0);
+		m.translate(0, torsoSize*0.55*0.9, 0);
 
 		m = shoulderLeft.getMatrix();			// shoulderLeft!!!
 		m.identity();
-		m.translate(0,limbSize*2.4,0);
-		m.translate( -torsoSize, 0, 0);
-		m.rotateZ(Math.sin(speed*time*2));
+		m.translate(0,torsoSize*0.6,0);
+		m.translate( -torsoSize-limbSize/2, 0, 0);
+		rotShoulder1 = MoveShoulder1.getMove(time);
+		rotShoulder2 = MoveShoulder2.getMove(time);
+		m.rotateX(rotShoulder1);
+		m.rotateZ(rotShoulder2);
 
 		m = shoulderRight.getMatrix();			// shoulderRight!!!
 		m.identity();
-		m.translate(0,limbSize*2.4,0);
-		m.translate( torsoSize, 0, 0);
-		m.rotateZ(-Math.sin(speed*time*2));
+		m.translate(0,torsoSize*0.6,0);
+		m.translate( torsoSize+limbSize/2, 0, 0);
+		m.rotateX(-rotShoulder1);
 
 		m = hipLeft.getMatrix();			// hipLeft!!!
 		m.identity();
-		m.translate(0,-limbSize*4,0);
+		m.translate(0,-torsoSize*0.8,0);
 		m.translate( -torsoSize*0.5, 0, 0);
+		m.rotateX(-rotShoulder1);
 
 		m = hipRight.getMatrix();			// hipRight!!!
 		m.identity();
-		m.translate(0,-limbSize*4,0);
+		m.translate(0,-torsoSize*0.8,0);
 		m.translate( torsoSize*0.5, 0, 0);
+		m.rotateX(rotShoulder1);
+
+		if (time >= 28.5*moveSpeed) {
+			startTime = getTime();
+		}
 	}
 
 	public Geometry getWorld() {

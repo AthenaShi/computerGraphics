@@ -29,6 +29,13 @@ public class Matrix {
 		}
 	}
 
+	public void createHermiteData(double dst[][]) {
+		dst[0][0] =  2; dst[0][1] = -2; dst[0][2] =  1; dst[0][3] =  1; 
+		dst[1][0] = -3; dst[1][1] =  3; dst[1][2] = -2; dst[1][3] = -1; 
+		dst[2][0] =  0; dst[2][1] =  0; dst[2][2] =  1; dst[2][3] =  0; 
+		dst[3][0] =  1; dst[3][1] =  0; dst[3][2] =  0; dst[3][3] =  0; 
+	}
+
 	public void createTranslationData(double a, double b, double c, double dst[][]) {
 		createIdentityData(dst);
 		dst[0][3] = a;
@@ -88,6 +95,10 @@ public class Matrix {
 
 	public void identity() {
 		createIdentityData(data);
+	}
+
+	public void hermiteMatrix() {
+		createHermiteData(data);
 	}
 
 	public void translate(double a, double b, double c) {
