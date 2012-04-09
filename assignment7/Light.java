@@ -6,5 +6,20 @@ public class Light {
 	public Light() {
 		this.Lxyz = Lxyz;
 		this.Irgb = Irgb;
+<<<<<<< HEAD
+	}
+	
+	public void setIrgb(double r, double g, double b) {
+		Irgb[0] = r;
+		Irgb[1] = g;	
+		Irgb[2] = b;
+	}	
+	public void setPosition(double x, double y, double z) {
+		Lxyz[0] = x;	
+		Lxyz[1] = y;	
+		Lxyz[2] = z;
+	}	
+=======
 	} 
+>>>>>>> 02e67171e915d78a556f1af21015f49051904748
 }

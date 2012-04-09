@@ -1,0 +1,38 @@
+#############
+# Lecture 1
+#############
+
+Matrices 4*4
+	translate
+	rot
+	scale
+	hierachies
+
+Modeling
+	sophere, cylinder, cube, ...
+	polygon --- data structures
+
+RENDERING
+Scar conversion
+Lightning + Sheding + Textrues -> material
+
+Animation
+	Kinematics
+		Forward Kin
+		Inverse Kin
+	Dynamic
+
+jonathantompson@gmail.com
+send him an email
+subject: GRAPHICS
+send him the URL the webpage for this class. A NYU website.
+
+An essay: what interests you in Computer Graphic, before class time next Thursday.
+
+#############
+# Lecture 2
+#############
+
+java graphics
+
+
