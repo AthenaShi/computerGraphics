@@ -6,7 +6,6 @@ public class Test extends BufferedApplet
 	int height = 0;
 	double f = 10;
 	double scale = 10;
-<<<<<<< HEAD
 	double norm = 0;
 	double sqrt = 0;
 	double temp = 0;
@@ -14,7 +13,7 @@ public class Test extends BufferedApplet
 	double tempArray[] = new double[3];
 	Color background = Color.black;
 
-	Sphere spheres[] = new Sphere[3];
+	Sphere spheres[] = new Sphere[1];
 	Material materials[] = new Material[3];
 	Light lights[] = new Light[2];
 
@@ -22,33 +21,6 @@ public class Test extends BufferedApplet
 	double v[] = new double[3];	// original of the ray
 	double w[] = new double[3];	// direction of the ray
 	
-=======
-	double norm;
-	double sqrt;
-	double temp;
-	double tempArray[] = new double[3];
-	Color background = Color.black;
-
-	Sphere sphere1;
-	Material material1;
-	Light light1;
-
-	Color drawRGB;
-
-	double v[] = new double[3];	// original of the ray
-	double w[] = new double[3];	// direction of the ray
-	double S[] = new double[3];	// surface of the sphere
-	double c[] = new double[3];	// center of each sphere
-	double r;			// radius of each sphere
-	double t;			// temp value of the ray
-	double N[] = new double[3];	// surface normal for a sphere
-	double R[] = new double[3];	// reflection vector
-	double phong[] = new double[3];
-	double reflection[] = new double[3];
-	double mc[] = new double[3];
-	
-
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 	public Test() {
 		initialize();
 	}
@@ -57,35 +29,30 @@ public class Test extends BufferedApplet
 		width = getWidth();
 		height = getHeight();
 		g.setColor(background);
-<<<<<<< HEAD
-=======
-
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 		rayTracingAndDraw(g);
 	}
 
 	public void initialize() {
-<<<<<<< HEAD
-		spheres[0] = new Sphere(0,1,0,1);
+		spheres[0] = new Sphere(0,0,0,1);
 		materials[0] = new Material();
-		materials[0].setArgb(228.0/255,229.0/255,231.0/255);	// silver
+/*		materials[0].setArgb(228.0/255,229.0/255,231.0/255);	// silver
 		materials[0].setDrgb(197.0/255,198.0/255,200.0/255);
-		materials[0].setSrgb(255.0/255,255.0/255,255.0/255);
-/*		materials[0].setArgb(1.0,0.0,0.0);	// red
+		materials[0].setSrgb(255.0/255,255.0/255,255.0/255);	*/
+		materials[0].setArgb(1.0,0.0,0.0);	// red
 		materials[0].setDrgb(1.0,1.0,1.0);
-		materials[0].setSrgb(1.0,1.0,1.0);	*/
+		materials[0].setSrgb(1.0,1.0,1.0);	
 		//materials[0].setSrgb(0.1,0.1,0.1);
 		materials[0].setP(1);
-		materials[0].setMCrgb(0.2);
+		materials[0].setMCrgb(0);
 
-		spheres[1] = new Sphere(-2,-1,0,1);
+/*		spheres[1] = new Sphere(-2,-1,0,1);
 		materials[1] = new Material();
 		materials[1].setArgb(255.0/255,200.0/255,100.0/255);	// 24k gold 218,178,115
 		materials[1].setDrgb(70.0/255,40.0/255,0.0);
 		materials[1].setSrgb(255.0/255,240.0/255,215.0/255);
-/*		materials[1].setArgb(0.0,1.0,0.0);	// green
-		materials[1].setDrgb(1.0,1.0,1.0);
-		materials[1].setSrgb(1.0,1.0,1.0);	*/
+//		materials[1].setArgb(0.0,1.0,0.0);	// green
+//		materials[1].setDrgb(1.0,1.0,1.0);
+//		materials[1].setSrgb(1.0,1.0,1.0);	
 		materials[1].setP(100);
 		//materials[1].setMCrgb(0.751, 0.664, 0.289);
 		materials[1].setMCrgb(0.01);
@@ -95,12 +62,12 @@ public class Test extends BufferedApplet
 		materials[2].setArgb(255.0/255,214.0/255,196.0/255);	// Copper
 		materials[2].setDrgb(225.0/255,87.0/255,51.0/255);
 		materials[2].setSrgb(255.0/255,214.0/255,196.0/255);
-/*		materials[2].setArgb(0.0,0.0,1.0);	// 24k gold 218,178,115
-		materials[2].setDrgb(1.0,1.0,1.0);
-		materials[2].setSrgb(1.0,1.0,1.0);	*/
-		materials[2].setP(30);
+//		materials[2].setArgb(0.0,0.0,1.0);	// 24k gold 218,178,115
+//		materials[2].setDrgb(1.0,1.0,1.0);
+//		materials[2].setSrgb(1.0,1.0,1.0);
+		materials[2].setP(6);
 		//materials[2].setP(1);
-		materials[2].setMCrgb(0.05); 
+		materials[2].setMCrgb(0.15); 	*/
 
 		lights[0] = new Light();
 		lights[0].setPosition(10, 20, 10);
@@ -117,25 +84,6 @@ public class Test extends BufferedApplet
 		lights[2].setPosition(14, 12, 0.5);
 		lights[2].setIrgb(0.5, 0, 0);
 		normalize(lights[2].Lxyz);  */
-=======
-		sphere1 = new Sphere();
-		sphere1.c[0] = 0;
-		sphere1.c[1] = 0;
-		sphere1.c[2] = 0;
-		material1 = new Material();
-		material1.Argb[0] = 1;
-		material1.Argb[1] = 0;
-		material1.Argb[2] = 0;
-		material1.Drgb[0] = 0.5;
-		material1.Drgb[1] = 0.5;
-		material1.Drgb[2] = 0.9;
-		material1.Srgb[0] = 0.8;
-		material1.Srgb[1] = 0.8;
-		material1.Srgb[2] = 0.8;
-		material1.p = 7;
-		light1 = new Light();
-		normalize(light1.Lxyz);
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 	}
 
 	public void rayTracingAndDraw(Graphics g) {
@@ -148,7 +96,6 @@ public class Test extends BufferedApplet
 				w[1] = (0.5*height-row)/width*scale;
 				w[2] = -f;
 				normalize(w);
-<<<<<<< HEAD
 				double colorRatio[] = getRayColor(v,w);
 				int colorR = Math.max(0, Math.min(255, (int)(colorRatio[0] * 255)));
 				int colorG = Math.max(0, Math.min(255, (int)(colorRatio[1] * 255)));
@@ -156,64 +103,30 @@ public class Test extends BufferedApplet
 				drawRGB = new Color(colorR, colorG, colorB);
 				g.setColor(drawRGB);
 				g.drawRect(col,row,1,1);
-=======
-				c[0] = sphere1.c[0];
-				c[1] = sphere1.c[1];
-				c[2] = sphere1.c[2];
-				r = sphere1.r;
-				mc = material1.mCrgb;
-				sqrt = Math.pow(dot(w,minus(v,c)),2) - dot(minus(v,c),minus(v,c)) + Math.pow(r,2);
-				if (sqrt >= 0) {
-					t = -dot(w,minus(v,c))-Math.sqrt(sqrt);
-					S = plus(multiply(w,t),v);
-					N = divide(minus(S,c),r);
-					R = minus(w, multiply(N,2*dot(N,w)));
-					//double part[] = plus(multiply(material1.Drgb,Math.max(0,-dot(light1.Lxyz,N))), 
-					//		multiply(material1.Srgb, Math.pow(Math.max(0,-dot(light1.Lxyz,R)),material1.p)));
-					double part[] = plus(multiply(material1.Drgb,-dot(light1.Lxyz,N)), 
-							multiply(material1.Srgb, Math.pow(-dot(light1.Lxyz,R),material1.p)));
-					double part2[] = new double[3];
-					part2[0] = part[0] * light1.Irgb[0];
-					part2[1] = part[1] * light1.Irgb[1];
-					part2[2] = part[2] * light1.Irgb[2];
-					phong = plus(material1.Argb, part2);
-					double color[] = {phong[0]*(1.0-mc[0])+light1.Irgb[0]*mc[0], phong[1]*(1.0-mc[1])+light1.Irgb[1]*mc[1], phong[2]*(1.0-mc[2])+light1.Irgb[2]*mc[2]};
-					int colorR = Math.max(0, Math.min(255, (int)(color[0] * 255)));
-					int colorG = Math.max(0, Math.min(255, (int)(color[1] * 255)));
-					int colorB = Math.max(0, Math.min(255, (int)(color[2] * 255)));
-					drawRGB = new Color(colorR, colorG, colorB);
-					g.setColor(drawRGB);
-					g.drawRect(col,row,1,1);
-				} else {
-					g.setColor(background);
-					g.drawRect(col,row,1,1);
-				}
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 			}
 		}
 	}
 
-<<<<<<< HEAD
 	public double[] getRayColor(double v[], double w[]) {
-	double p = 1.0;
-	boolean interact = false;
-	boolean nearestInter = false;
-	double tNearest = 1000000000;
-	double S[] = new double[3];	// surface of the sphere
-	double c[] = new double[3];	// center of each sphere
-	double r = 2;			// radius of each sphere
-	double t = 0;			// temp value of the ray
-	double N[] = new double[3];	// surface normal for a sphere
-	double R[] = new double[3];	// reflection vector
-	double phong[] = new double[3];
-	double colorReturn[] = new double[3];
-	double reflection[] = new double[3];
-	double mc[] = new double[3];
-	double Argb[] = new double[3];
-	double Drgb[] = new double[3];
-	double Srgb[] = new double[3];
-	double Lxyz[] = new double[3];
-	double Irgb[] = new double[3];
+		double p = 1.0;
+		boolean interact = false;
+		boolean nearestInter = false;
+		double tNearest = 1000000000;
+		double S[] = new double[3];	// surface of the sphere
+		double c[] = new double[3];	// center of each sphere
+		double r = 2;			// radius of each sphere
+		double t = 0;			// temp value of the ray
+		double N[] = new double[3];	// surface normal for a sphere
+		double R[] = new double[3];	// reflection vector
+		double phong[] = new double[3];
+		double colorReturn[] = new double[3];
+		double reflection[] = new double[3];
+		double mc[] = new double[3];
+		double Argb[] = new double[3];
+		double Drgb[] = new double[3];
+		double Srgb[] = new double[3];
+		double Lxyz[] = new double[3];
+		double Irgb[] = new double[3];
 
 		for (int iS=0; iS<spheres.length; iS++) {
 			c = spheres[iS].c;
@@ -256,12 +169,19 @@ public class Test extends BufferedApplet
 				} else
 					nearestInter = false;
 				if (nearestInter) {
+					System.out.println("v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
+					System.out.println("w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
+
 					S[0] = w[0]*t+v[0];
 					S[1] = w[1]*t+v[1];
 					S[2] = w[2]*t+v[2];
+					System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+
 					N[0] = (S[0]-c[0]) / r;
 					N[1] = (S[1]-c[1]) / r;
 					N[2] = (S[2]-c[2]) / r;
+					System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+
 					R[0] = w[0] - 2.0*dot(N,w)*N[0];
 					R[1] = w[1] - 2.0*dot(N,w)*N[1];
 					R[2] = w[2] - 2.0*dot(N,w)*N[2];
@@ -303,76 +223,6 @@ public class Test extends BufferedApplet
 		}
 		return colorReturn;
 		}
-=======
-	public double[] plus(int src[], double d) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = (double)src[i]+d;
-		}
-		return tempArray;
-	}
-
-	public double[] plus(int src[], double srr[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = (double)src[i]+srr[i];
-		}
-		return tempArray;
-	}
-
-	public double[] plus(double src[], double srr[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = src[i]+srr[i];
-		}
-		return tempArray;
-	}
-
-	public double[] minus(double d, double src[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = d-src[i];
-		}
-		return tempArray;
-	}
-
-	public double[] minus(int src[], double srr[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = (double)src[i]-srr[i];
-		}
-		return tempArray;
-	}
-
-	public double[] minus(double src[], double srr[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = src[i]-srr[i];
-		}
-		return tempArray;
-	}
-
-	public double[] divide(double src[], double d) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = src[i]/d;
-		}
-		return tempArray;
-	}
-
-	public double[] multiply(int src[], double d) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = (double)src[i]*d;
-		}
-		return tempArray;
-	}
-
-	public double[] multiply(double src[], double srr[]) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = src[i]*srr[i];
-		}
-		return tempArray;
-	}
-
-	public double[] multiply(double src[], double d) {
-		for (int i=0; i<src.length; i++) {
-			tempArray[i] = src[i]*d;
-		}
-		return tempArray;
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 	}
 
 	public double dot(int src[], double srr[]) {
@@ -396,9 +246,5 @@ public class Test extends BufferedApplet
 		for (int i=0; i<src.length; i++) {
 			src[i] /= norm;
 		}
-	}
-	public void viewport(double src[], int dst[]) {
-		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
-		dst[1] = (int) ( 0.5 * height - src[1] * scale );
 	}
 }

@@ -6,7 +6,6 @@ public class Light {
 	public Light() {
 		this.Lxyz = Lxyz;
 		this.Irgb = Irgb;
-<<<<<<< HEAD
 	}
 	
 	public void setIrgb(double r, double g, double b) {
@@ -19,7 +18,4 @@ public class Light {
 		Lxyz[1] = y;	
 		Lxyz[2] = z;
 	}	
-=======
-	} 
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 }

@@ -12,7 +12,6 @@ public class Material {
 		this.Srgb = Srgb;
 		this.p = p;
 		this.mCrgb = mCrgb;
-<<<<<<< HEAD
 	}
 
 	public void setArgb(double r, double g, double b) {
@@ -48,7 +47,4 @@ public class Material {
 	public void setP(double pp) {
 		p = pp;
 	}
-=======
-	} 
->>>>>>> 02e67171e915d78a556f1af21015f49051904748
 }
