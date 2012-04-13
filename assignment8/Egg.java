@@ -28,21 +28,24 @@ public class Egg extends MISApplet {
 		geoOrigin[0].Plane(0,1,0,-1);
 		geoOrigin[0].Plane(0,-1,0,-1);
 		materials[0] = new Material();
-		materials[0].setArgb(1.0,0.0,0.0);	// red
+		materials[0].setArgb(0,0,1);	// blue
 		materials[0].setDrgb(1.0,1.0,1.0);
 		materials[0].setSrgb(1.0,1.0,1.0);
+//		materials[0].setDrgb(0.5,0.5,0.5);
+//		materials[0].setSrgb(0.5,0.5,0.5);
 		materials[0].setP(1);
 		materials[0].setMCrgb(0);
 
 		lights[0] = new Light();
-		lights[0].setPosition(10, 20, 10);
+		lights[0].setPosition(10, 30, 10);
 		lights[0].setIrgb(0.7, 0.7, 0.7);
+	//	lights[0].setIrgb(0, 0, 1);
 		normalize(lights[0].Lxyz);
 
 		lights[1] = new Light();
 		lights[1].setPosition(-10,-20, -10);
-		lights[1].setIrgb(0.7,0.7,0.7);
-		//lights[1].setIrgb(0.3, 0.3, 0.3);
+	//	lights[1].setIrgb(0,0,1.0);
+		lights[1].setIrgb(1, 1, 1);
 		normalize(lights[1].Lxyz); 
 	}
 
@@ -64,9 +67,9 @@ public class Egg extends MISApplet {
 		w[2] = -f;
 		normalize(w);
 	//	System.out.println("W:\t"+WW+"\t"+HH);
-		System.out.println("x:\t"+x+"\t"+y);
-		System.out.println("v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
-		System.out.println("w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
+	//	System.out.println("x:\t"+x+"\t"+y);
+	//	System.out.println("v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
+	//	System.out.println("w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
 		double colorRatio[] = getRayColor(v,w);
 		rgb[0] = Math.max(0, Math.min(255, (int)(colorRatio[0] * 255)));
 		rgb[1] = Math.max(0, Math.min(255, (int)(colorRatio[1] * 255)));
@@ -80,18 +83,18 @@ public class Egg extends MISApplet {
 		double t = 0;			// temp value of the ray
 		boolean interact = false, nearestInter = false;
 		double tNearest = 1000000000;
-		double S[] = new double[3];	// surface of the interact
-		double N[] = new double[3];	// surface normal for a sphere
-		double R[] = new double[3];	// reflection vector
-		double phong[] = new double[3];
-		double colorReturn[] = new double[3];
-		double reflection[] = new double[3];
-		double mc[] = new double[3];
-		double Argb[] = new double[3];
-		double Drgb[] = new double[3];
-		double Srgb[] = new double[3];
-		double Lxyz[] = new double[3];
-		double Irgb[] = new double[3];
+		double S[] = {0,0,0};	// surface of the interact
+		double N[] = {0,0,0};	// surface normal for a sphere
+		double R[] = {0,0,0};	// reflection vector
+		double phong[] = {0,0,0};
+		double colorReturn[] = {0,0,0};
+		double reflection[] = {0,0,0};
+		double mc[] = {0,0,0};
+		double Argb[] = {0,0,0};
+		double Drgb[] = {0,0,0};
+		double Srgb[] = {0,0,0};
+		double Lxyz[] = {0,0,0};
+		double Irgb[] = {0,0,0};
 		double A = 0, B = 0, C = 0;
 		double a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0, i = 0, j = 0;
 		HitList hitList = new HitList();
@@ -129,9 +132,9 @@ public class Egg extends MISApplet {
 							N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
 							N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
 							int in1 = dot(w,N)<0 ? 1 : -1;
-							System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-							System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-							System.out.println("dot:\t"+dot(w,N));
+						//	System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+						//	System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+						//	System.out.println("dot:\t"+dot(w,N));
 
 							S[0] = w[0]*t2+v[0];
 							S[1] = w[1]*t2+v[1];
@@ -140,13 +143,13 @@ public class Egg extends MISApplet {
 							N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
 							N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
 							int in2 = dot(w,N)<0 ? 1 : -1;
-							System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-							System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-							System.out.println("dot:\t"+dot(w,N));
+						//	System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+						//	System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+						//	System.out.println("dot:\t"+dot(w,N));
 
 							double thisList[][] = { {t1, iSubG, in1}, {t2, iSubG, in2} };
-							System.out.println("setList1:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
-							System.out.println("setList2:\t"+thisList[1][0]+"\t"+thisList[1][1]+"\t"+thisList[1][2]);
+						//	System.out.println("setList1:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
+						//	System.out.println("setList2:\t"+thisList[1][0]+"\t"+thisList[1][1]+"\t"+thisList[1][2]);
 							if (iSubG == 0) {
 								hitList.Put(thisList);
 							} else {
@@ -164,7 +167,7 @@ public class Egg extends MISApplet {
 		//			}
 				} else {
 					t = -(g*v[0] + h*v[1] + i*v[2] + j)/(g*w[0] + h*w[1] + i*w[2]);
-					System.out.println("t:\t"+t);
+				//	System.out.println("t:\t"+t);
 					if (t>0) {
 						S[0] = w[0]*t+v[0];
 						S[1] = w[1]*t+v[1];
@@ -173,11 +176,11 @@ public class Egg extends MISApplet {
 						N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
 						N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
 						int in = dot(w,N)<0 ? 1 : -1;
-						System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-						System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-						System.out.println("dot:\t"+dot(w,N));
+				//		System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+				//		System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+				//		System.out.println("dot:\t"+dot(w,N));
 						double thisList[][] = { {t, iSubG, in} };
-						System.out.println("setList:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
+				//		System.out.println("setList:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
 						if (iSubG == 0) {
 							hitList.Put(thisList);
 						} else {
@@ -198,7 +201,7 @@ public class Egg extends MISApplet {
 			if (!hitList.isEmpty())
 				interact = true;
 		}
-		System.out.println("Interact:\t"+interact);
+	//	System.out.println("Interact:\t"+interact);
 
 		if (!interact) {	// return background color r g b in 0-1 scope
 			colorReturn[0] = (double)(background[0]/255.0);
@@ -278,7 +281,7 @@ public class Egg extends MISApplet {
 						Lxyz = lights[iL].Lxyz;
 						Irgb = lights[iL].Irgb;
 						double dotLN = Math.max(0,dot(Lxyz,N));
-						double dotLV = Math.max(0,Math.pow(dot(Lxyz,R),p));
+						double dotLV = Math.pow(Math.max(0,dot(Lxyz,R)),p);
 						phong[0] += Irgb[0]*(Drgb[0]*dotLN+Srgb[0]*dotLV);
 						phong[1] += Irgb[1]*(Drgb[1]*dotLN+Srgb[1]*dotLV);
 						phong[2] += Irgb[2]*(Drgb[2]*dotLN+Srgb[2]*dotLV);
