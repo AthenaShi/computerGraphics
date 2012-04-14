@@ -8,15 +8,17 @@ public class Egg extends MISApplet {
 	double temp = 0;
 	double epsilon = 0.01;
 	double background[] = {0.0,0.0,0.0};
-	int geoI = 1;
+	int geoI = 3;
+	int traceTime = 0;
 
 	Geometry geoOrigin[] = new Geometry[geoI];
 	Geometry geometrys[] = new Geometry[geoI];
 	Material materials[] = new Material[geoI];
+//	HitList geoList[] = new HitList[geoI];
 	Light lights[] = new Light[2];
 
-	double v[] = new double[3];	// original of the ray
-	double w[] = new double[3];	// direction of the ray
+	double v[] = {0,0,0};	// original of the ray
+	double w[] = {0,0,0};	// direction of the ray
 
 	public Egg() {
 		initialize();
@@ -24,9 +26,11 @@ public class Egg extends MISApplet {
 
 	public void initialize() {
 		geoOrigin[0] = new Geometry();
+		geoOrigin[0].Plane(-1,1,1,2);
 		geoOrigin[0].Cylinder();
-		geoOrigin[0].Plane(0,1,0,-1);
-		geoOrigin[0].Plane(0,-1,0,-1);
+		geoOrigin[0].setG(-6);;
+		geoOrigin[0].setJ(8);
+		geoOrigin[0].Plane(0,-1,0,-3);
 		materials[0] = new Material();
 		materials[0].setArgb(0,0,1);	// blue
 		materials[0].setDrgb(1.0,1.0,1.0);
@@ -34,8 +38,54 @@ public class Egg extends MISApplet {
 //		materials[0].setDrgb(0.5,0.5,0.5);
 //		materials[0].setSrgb(0.5,0.5,0.5);
 		materials[0].setP(1);
-		materials[0].setMCrgb(0);
+		materials[0].setMCrgb(0.7);
 
+		geoOrigin[1] = new Geometry();
+		geoOrigin[1].Cylinder();
+
+//		geoOrigin[1].Plane(0,-1,0,-1);
+//		geoOrigin[1].Plane(0,1,0,-3);
+		materials[1] = new Material();
+		materials[1].setArgb(1,0,0);	// red
+		materials[1].setDrgb(1.0,1.0,1.0);
+		materials[1].setSrgb(1.0,1.0,1.0);
+//		materials[1].setDrgb(0.5,0.5,0.5);
+//		materials[1].setSrgb(0.5,0.5,0.5);
+		materials[1].setP(1);
+		materials[1].setMCrgb(0.3); 
+
+		geoOrigin[2] = new Geometry();
+		geoOrigin[2].Sphere();
+		geoOrigin[2].setG(4);
+		geoOrigin[2].setJ(3);
+
+//		geoOrigin[2].Plane(0,-1,0,-1);
+//		geoOrigin[2].Plane(0,1,0,-3);
+		materials[2] = new Material();
+		materials[2].setArgb(0,1,0);	// green
+		materials[2].setDrgb(1.0,1.0,1.0);
+		materials[2].setSrgb(1.0,1.0,1.0);
+//		materials[2].setDrgb(0.5,0.5,0.5);
+//		materials[2].setSrgb(0.5,0.5,0.5);
+		materials[2].setP(1);
+		materials[2].setMCrgb(0.3); 
+
+/*		geoOrigin[3] = new Geometry();
+		geoOrigin[3].Sphere();
+		geoOrigin[3].h[0] = 4;
+		geoOrigin[3].j[0] = 3;
+
+//		geoOrigin[3].Plane(0,-1,0,-1);
+//		geoOrigin[3].Plane(0,1,0,-3);
+		materials[3] = new Material();
+		materials[3].setArgb(0,1,0);	// blue
+		materials[3].setDrgb(1.0,1.0,1.0);
+		materials[3].setSrgb(1.0,1.0,1.0);
+//		materials[3].setDrgb(0.5,0.5,0.5);
+//		materials[3].setSrgb(0.5,0.5,0.5);
+		materials[3].setP(1);
+		materials[3].setMCrgb(0.3);  */
+		
 		lights[0] = new Light();
 		lights[0].setPosition(10, 30, 10);
 		lights[0].setIrgb(0.7, 0.7, 0.7);
@@ -45,7 +95,7 @@ public class Egg extends MISApplet {
 		lights[1] = new Light();
 		lights[1].setPosition(-10,-20, -10);
 	//	lights[1].setIrgb(0,0,1.0);
-		lights[1].setIrgb(1, 1, 1);
+		lights[1].setIrgb(1, 0, 0);
 		normalize(lights[1].Lxyz); 
 	}
 
@@ -78,11 +128,9 @@ public class Egg extends MISApplet {
 
 	private double[] getRayColor(double v[], double w[]) {
 		double p = 1.0;
-		double t1 = 0;			// temp value of the ray
-		double t2 = 0;			// temp value of the ray
-		double t = 0;			// temp value of the ray
+		double t1 = 0, t2 = 0, t = 0;
 		boolean interact = false, nearestInter = false;
-		double tNearest = 1000000000;
+		double tNearest = Double.MAX_VALUE;
 		double S[] = {0,0,0};	// surface of the interact
 		double N[] = {0,0,0};	// surface normal for a sphere
 		double R[] = {0,0,0};	// reflection vector
@@ -90,27 +138,25 @@ public class Egg extends MISApplet {
 		double colorReturn[] = {0,0,0};
 		double reflection[] = {0,0,0};
 		double mc[] = {0,0,0};
-		double Argb[] = {0,0,0};
-		double Drgb[] = {0,0,0};
-		double Srgb[] = {0,0,0};
-		double Lxyz[] = {0,0,0};
-		double Irgb[] = {0,0,0};
+		double Argb[] = {0.0,0.0,0.0}, Drgb[] = {0.0,0.0,0.0}, Srgb[] = {0.0,0.0,0.0}, Lxyz[] = {0.0,0.0,0.0}, Irgb[] = {0.0,0.0,0.0};
 		double A = 0, B = 0, C = 0;
 		double a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0, i = 0, j = 0;
 		HitList hitList = new HitList();
+		double hitFirestT[][] = new double[geoI][2];
+		traceTime++;
 
 		for (int iG=0; iG<geometrys.length; iG++) {
-			for (int iSubG=0; iSubG<geometrys[iG].a.size(); iSubG++) {
-				a = geometrys[iG].a.get(iSubG);
-				b = geometrys[iG].b.get(iSubG);
-				c = geometrys[iG].c.get(iSubG);
-				d = geometrys[iG].d.get(iSubG);
-				e = geometrys[iG].e.get(iSubG);
-				f = geometrys[iG].f.get(iSubG);
-				g = geometrys[iG].g.get(iSubG);
-				h = geometrys[iG].h.get(iSubG);
-				i = geometrys[iG].i.get(iSubG);
-				j = geometrys[iG].j.get(iSubG);
+			for (int iSubG=0; iSubG<geometrys[iG].getSubNumber(); iSubG++) {
+				a = geometrys[iG].a[iSubG];
+				b = geometrys[iG].b[iSubG];
+				c = geometrys[iG].c[iSubG];
+				d = geometrys[iG].d[iSubG];
+				e = geometrys[iG].e[iSubG];
+				f = geometrys[iG].f[iSubG];
+				g = geometrys[iG].g[iSubG];
+				h = geometrys[iG].h[iSubG];
+				i = geometrys[iG].i[iSubG];
+				j = geometrys[iG].j[iSubG];
 				if (a!=0 || b!=0 || c!=0 || d!=0 || e!=0 || f!=0 ) {
 					A = a*w[0]*w[0] + b*w[1]*w[1] + c*w[2]*w[2] + 
 						d*w[1]*w[2] + e*w[2]*w[0] + f*w[0]*w[1];
@@ -125,31 +171,34 @@ public class Egg extends MISApplet {
 						t1 = (-B - Math.sqrt(sqrt))/(2.0*A);
 						t2 = (-B + Math.sqrt(sqrt))/(2.0*A);
 						if (t1 > 0) {	// t2 > 0
-							S[0] = w[0]*t1+v[0];
-							S[1] = w[1]*t1+v[1];
-							S[2] = w[2]*t1+v[2];
+							S[0] = w[0]*t1+v[0]; S[1] = w[1]*t1+v[1]; S[2] = w[2]*t1+v[2];
 							N[0] = 2.0*a*S[0] + f*S[1] + e*S[2] + g;
 							N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
 							N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
 							int in1 = dot(w,N)<0 ? 1 : -1;
-						//	System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-						//	System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-						//	System.out.println("dot:\t"+dot(w,N));
-
-							S[0] = w[0]*t2+v[0];
-							S[1] = w[1]*t2+v[1];
-							S[2] = w[2]*t2+v[2];
+							S[0] = w[0]*t2+v[0]; S[1] = w[1]*t2+v[1]; S[2] = w[2]*t2+v[2];
 							N[0] = 2.0*a*S[0] + f*S[1] + e*S[2] + g;
 							N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
 							N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
 							int in2 = dot(w,N)<0 ? 1 : -1;
-						//	System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-						//	System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-						//	System.out.println("dot:\t"+dot(w,N));
-
 							double thisList[][] = { {t1, iSubG, in1}, {t2, iSubG, in2} };
-						//	System.out.println("setList1:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
-						//	System.out.println("setList2:\t"+thisList[1][0]+"\t"+thisList[1][1]+"\t"+thisList[1][2]);
+							if (iSubG == 0) {
+								hitList.Put(thisList);
+							} else {
+								if (hitList.isEmpty())
+									break;
+								else
+									hitList.Union(thisList);
+							}
+							if (hitList.isEmpty())
+								break;
+						} else if (t2 > 0) {
+							S[0] = w[0]*t2+v[0]; S[1] = w[1]*t2+v[1]; S[2] = w[2]*t2+v[2];
+							N[0] = 2.0*a*S[0] + f*S[1] + e*S[2] + g;
+							N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
+							N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
+							int in2 = dot(w,N)<0 ? 1 : -1;
+							double thisList[][] = { {t2, iSubG, in2} };
 							if (iSubG == 0) {
 								hitList.Put(thisList);
 							} else {
@@ -161,97 +210,77 @@ public class Egg extends MISApplet {
 							if (hitList.isEmpty())
 								break;
 						}
+					} else			// if not interact than empty the hitList
+						hitList.empty();
+				} else {	// if it's plane, it must have a hitList (if t<0, than start from t=0
+					double thisList[][] = { {0,iSubG, 0} };
+					if (g*w[0] + h*w[1] + i*w[2] == 0) {	// if ray is parallel with the plane
+						thisList[0][2] = (g*v[0] + h*v[1] + i*v[2] + j)<0 ? 1 : -1;
+					} else {
+						t = -(g*v[0] + h*v[1] + i*v[2] + j)/(g*w[0] + h*w[1] + i*w[2]);
+						S[0] = w[0]*t+v[0]; S[1] = w[1]*t+v[1]; S[2] = w[2]*t+v[2];
+						N[0] = g;
+						N[1] = h;
+						N[2] = i;
+						thisList[0][2] = dot(w,N)<0 ? 1 : -1;
+						if (t>0) 	// if interact with the plane
+							thisList[0][0] = t;
 					}
-		//		       	else {
-		//				break;
-		//			}
-				} else {
-					t = -(g*v[0] + h*v[1] + i*v[2] + j)/(g*w[0] + h*w[1] + i*w[2]);
-				//	System.out.println("t:\t"+t);
-					if (t>0) {
-						S[0] = w[0]*t+v[0];
-						S[1] = w[1]*t+v[1];
-						S[2] = w[2]*t+v[2];
-						N[0] = 2.0*a*S[0] + f*S[1] + e*S[2] + g;
-						N[1] = 2.0*b*S[1] + d*S[2] + f*S[0] + h;
-						N[2] = 2.0*c*S[2] + e*S[0] + d*S[1] + i;
-						int in = dot(w,N)<0 ? 1 : -1;
-				//		System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-				//		System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-				//		System.out.println("dot:\t"+dot(w,N));
-						double thisList[][] = { {t, iSubG, in} };
-				//		System.out.println("setList:\t"+thisList[0][0]+"\t"+thisList[0][1]+"\t"+thisList[0][2]);
-						if (iSubG == 0) {
-							hitList.Put(thisList);
-						} else {
-							if (hitList.isEmpty())
-								break;
-							else
-								hitList.Union(thisList);
-						}
+					if (iSubG == 0) {
+						hitList.Put(thisList);
+					} else {
 						if (hitList.isEmpty())
 							break;
-					} 
-				//	else {
-				//		break;
-				//	}
+						else
+							hitList.Union(thisList);
+					}
+					if (hitList.isEmpty())
+						break;
 				}
 			}
-
-			if (!hitList.isEmpty())
+			// after search each part in this geometry
+			if (!hitList.isEmpty()) {
 				interact = true;
+				hitFirestT[iG][0] = hitList.data[0][0];
+				hitFirestT[iG][1] = hitList.data[0][1];
+			} else {
+		//		interact = false;
+				hitFirestT[iG][0] = Double.MAX_VALUE;
+			}
 		}
-	//	System.out.println("Interact:\t"+interact);
 
-		if (!interact) {	// return background color r g b in 0-1 scope
+		if (!interact || traceTime>5 ) {	// return background color r g b in 0-1 scope
 			colorReturn[0] = (double)(background[0]/255.0);
 			colorReturn[1] = (double)(background[1]/255.0);
 			colorReturn[2] = (double)(background[2]/255.0);
+			traceTime = 0;
 			return colorReturn;
 		} else {
-
-		for (int iG=0; iG<geometrys.length; iG++) {	//////////////////////////???!!!
-			mc[0] = materials[iG].mCrgb[0];
-			mc[1] = materials[iG].mCrgb[1];
-			mc[2] = materials[iG].mCrgb[2];
-			a = geometrys[iG].a.get(0);
-			b = geometrys[iG].b.get(0);
-			c = geometrys[iG].c.get(0);
-			d = geometrys[iG].d.get(0);
-			e = geometrys[iG].e.get(0);
-			f = geometrys[iG].f.get(0);
-			g = geometrys[iG].g.get(0);
-			h = geometrys[iG].h.get(0);
-			i = geometrys[iG].i.get(0);
-			j = geometrys[iG].j.get(0);
-			if (a!=0 || b!=0 || c!=0 || d!=0 || e!=0 || f!=0 ) {
-				A = a*w[0]*w[0] + b*w[1]*w[1] + c*w[2]*w[2] + 
-					d*w[1]*w[2] + e*w[2]*w[0] + f*w[0]*w[1];
-				B = 2.0*a*w[0]*v[0] + 2.0*b*w[1]*v[1] + 2.0*c*w[2]*v[2] +
-					d*v[1]*w[2]+d*w[1]*v[2] + e*v[2]*w[0]+e*w[2]*v[0]+ f*v[0]*w[1]+f*w[0]*v[1] +
-					g*w[0] + h*w[1] + i*w[2];
-				C = a*v[0]*v[0] + b*v[1]*v[1] + c*v[2]*v[2] +
-					d*v[1]*v[2] + e*v[2]*v[0] + f*v[0]*v[1] +
-					g*v[0] + h*v[1] + i*v[2] + j;
-				sqrt = B*B-4.0*A*C;
-				if (sqrt >= 0) {	// if interact with sphere iG
-					t = (-B - Math.sqrt(sqrt))/(2.0*A);
-					if (t < tNearest && t > 0) {
-						nearestInter = true;
-						tNearest = t;
-					} else
-						nearestInter = false;
-				}
-			} else {
-				t = -(g*v[0] + h*v[1] + i*v[2] + j)/(g*w[0] + h*w[1] + i*w[2]);
-				if (t < tNearest && t > 0) {
+			for (int iG=0; iG<geometrys.length; iG++) {	//////////////////////////???!!!
+				// if hit
+				t = hitFirestT[iG][0];
+				if (t < tNearest) {
 					nearestInter = true;
 					tNearest = t;
 				} else
 					nearestInter = false;
-			}
-
+	
 				if (nearestInter) {
+					int iSubG = (int)hitFirestT[iG][1];
+					mc[0] = materials[iG].mCrgb[0];
+					mc[1] = materials[iG].mCrgb[1];
+					mc[2] = materials[iG].mCrgb[2];
+					a = geometrys[iG].a[iSubG];
+					b = geometrys[iG].b[iSubG];
+					c = geometrys[iG].c[iSubG];
+					d = geometrys[iG].d[iSubG];
+					e = geometrys[iG].e[iSubG];
+					f = geometrys[iG].f[iSubG];
+					g = geometrys[iG].g[iSubG];
+					h = geometrys[iG].h[iSubG];
+					i = geometrys[iG].i[iSubG];
+					j = geometrys[iG].j[iSubG];
+
 				//	System.out.println(a+"\t"+b+"\t"+c+"\t"+d+"\t"+e+"\t"+f+"\t"+g+"\t"+h+"\t"+i+"\t"+j);
 				//	System.out.println("v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
 				//	System.out.println("w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
@@ -272,6 +301,10 @@ public class Egg extends MISApplet {
 					Argb = materials[iG].Argb;
 					Drgb = materials[iG].Drgb;
 					Srgb = materials[iG].Srgb;
+				//	System.out.println(iG+":\t"+Argb[0]+"\t"+Argb[1]+"\t"+Argb[2]);
+				//	System.out.println(iG+":\t"+Drgb[0]+"\t"+Drgb[1]+"\t"+Drgb[2]);
+				//	System.out.println(iG+":\t"+Srgb[0]+"\t"+Srgb[1]+"\t"+Srgb[2]);
+				//	System.out.println(iG+":\t"+mc[0]+"\t"+mc[1]+"\t"+mc[2]);
 					p = materials[iG].p;
 					phong[0] = Argb[0];
 					phong[1] = Argb[1];
@@ -286,15 +319,23 @@ public class Egg extends MISApplet {
 						phong[1] += Irgb[1]*(Drgb[1]*dotLN+Srgb[1]*dotLV);
 						phong[2] += Irgb[2]*(Drgb[2]*dotLN+Srgb[2]*dotLV);
 					} 
-					double newV[] = new double[3];
+					double newV[] = {0,0,0};
 					newV[0] = S[0] + epsilon*R[0];
 					newV[1] = S[1] + epsilon*R[1];
 					newV[2] = S[2] + epsilon*R[2];
-					double newW[] = new double[3];
+					double newW[] = {0,0,0};
 					newW[0] = R[0];
 					newW[1] = R[1];
 					newW[2] = R[2];
 					normalize(newW);
+				//	System.out.println(iG+"S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+				//	System.out.println(iG+"v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
+				//	System.out.println(iG+"w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
+				//	System.out.println(iG+"N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+				//	System.out.println(iG+"R:\t"+R[0]+"\t"+R[1]+"\t"+R[2]);
+				//	System.out.println(iG+"newV:\t"+newV[0]+"\t"+newV[1]+"\t"+newV[2]);
+				//	System.out.println(iG+"newW:\t"+newW[0]+"\t"+newW[1]+"\t"+newW[2]);
+
 					reflection = getRayColor(newV, newW);
 					colorReturn[0] = phong[0]*(1.0-mc[0]) + reflection[0]*mc[0];
 					colorReturn[1] = phong[1]*(1.0-mc[1]) + reflection[1]*mc[1];
@@ -302,10 +343,10 @@ public class Egg extends MISApplet {
 			/*		colorReturn[0] = phong[0];
 					colorReturn[1] = phong[1];
 					colorReturn[2] = phong[2]; */
-				
+				//	System.out.println(iG+"Return:\t"+colorReturn[0]+"\t"+colorReturn[1]+"\t"+colorReturn[2]);
+				}
 			}
-		}
-		return colorReturn;
+			return colorReturn;
 		}
 	}
 

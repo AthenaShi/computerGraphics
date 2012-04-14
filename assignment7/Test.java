@@ -13,7 +13,7 @@ public class Test extends BufferedApplet
 	double tempArray[] = new double[3];
 	Color background = Color.black;
 
-	Sphere spheres[] = new Sphere[1];
+	Sphere spheres[] = new Sphere[2];
 	Material materials[] = new Material[3];
 	Light lights[] = new Light[2];
 
@@ -35,39 +35,39 @@ public class Test extends BufferedApplet
 	public void initialize() {
 		spheres[0] = new Sphere(0,0,0,1);
 		materials[0] = new Material();
-/*		materials[0].setArgb(228.0/255,229.0/255,231.0/255);	// silver
-		materials[0].setDrgb(197.0/255,198.0/255,200.0/255);
-		materials[0].setSrgb(255.0/255,255.0/255,255.0/255);	*/
-		materials[0].setArgb(1.0,0.0,0.0);	// red
+//		materials[0].setArgb(228.0/255,229.0/255,231.0/255);	// silver
+//		materials[0].setDrgb(197.0/255,198.0/255,200.0/255);
+//		materials[0].setSrgb(255.0/255,255.0/255,255.0/255);
+		materials[0].setArgb(0,0.0,1);	// red
 		materials[0].setDrgb(1.0,1.0,1.0);
 		materials[0].setSrgb(1.0,1.0,1.0);	
 		//materials[0].setSrgb(0.1,0.1,0.1);
 		materials[0].setP(1);
-		materials[0].setMCrgb(0);
+		materials[0].setMCrgb(0.3);
 
-/*		spheres[1] = new Sphere(-2,-1,0,1);
+		spheres[1] = new Sphere(2,0,0,1);
 		materials[1] = new Material();
-		materials[1].setArgb(255.0/255,200.0/255,100.0/255);	// 24k gold 218,178,115
-		materials[1].setDrgb(70.0/255,40.0/255,0.0);
-		materials[1].setSrgb(255.0/255,240.0/255,215.0/255);
-//		materials[1].setArgb(0.0,1.0,0.0);	// green
-//		materials[1].setDrgb(1.0,1.0,1.0);
-//		materials[1].setSrgb(1.0,1.0,1.0);	
-		materials[1].setP(100);
+//		materials[1].setArgb(255.0/255,200.0/255,100.0/255);	// 24k gold 218,178,115
+//		materials[1].setDrgb(70.0/255,40.0/255,0.0);
+//		materials[1].setSrgb(255.0/255,240.0/255,215.0/255);
+		materials[1].setArgb(1,0,0.0);	// green
+		materials[1].setDrgb(1.0,1.0,1.0);
+		materials[1].setSrgb(1.0,1.0,1.0);	
+		materials[1].setP(1);
 		//materials[1].setMCrgb(0.751, 0.664, 0.289);
-		materials[1].setMCrgb(0.01);
+		materials[1].setMCrgb(0.3);
 
-		spheres[2] = new Sphere(2,-1,0,1);
+/*		spheres[2] = new Sphere(2,-1,0,1);
 		materials[2] = new Material();
 		materials[2].setArgb(255.0/255,214.0/255,196.0/255);	// Copper
 		materials[2].setDrgb(225.0/255,87.0/255,51.0/255);
 		materials[2].setSrgb(255.0/255,214.0/255,196.0/255);
-//		materials[2].setArgb(0.0,0.0,1.0);	// 24k gold 218,178,115
-//		materials[2].setDrgb(1.0,1.0,1.0);
-//		materials[2].setSrgb(1.0,1.0,1.0);
-		materials[2].setP(6);
+/*		materials[2].setArgb(0.0,0.0,1.0);	// 24k gold 218,178,115
+		materials[2].setDrgb(1.0,1.0,1.0);
+		materials[2].setSrgb(1.0,1.0,1.0);	*/
+//		materials[2].setP(6);
 		//materials[2].setP(1);
-		materials[2].setMCrgb(0.15); 	*/
+//		materials[2].setMCrgb(0.15);  
 
 		lights[0] = new Light();
 		lights[0].setPosition(10, 20, 10);
@@ -89,6 +89,7 @@ public class Test extends BufferedApplet
 	public void rayTracingAndDraw(Graphics g) {
 		for (int row=0; row<height; row++) {
 			for (int col=0; col<width; col++) {
+				System.out.println("x:\t"+col+"\t"+row);
 				v[0] = 0;
 				v[1] = 0;
 				v[2] = f;
@@ -108,25 +109,21 @@ public class Test extends BufferedApplet
 	}
 
 	public double[] getRayColor(double v[], double w[]) {
-		double p = 1.0;
-		boolean interact = false;
-		boolean nearestInter = false;
-		double tNearest = 1000000000;
-		double S[] = new double[3];	// surface of the sphere
-		double c[] = new double[3];	// center of each sphere
-		double r = 2;			// radius of each sphere
-		double t = 0;			// temp value of the ray
-		double N[] = new double[3];	// surface normal for a sphere
-		double R[] = new double[3];	// reflection vector
-		double phong[] = new double[3];
-		double colorReturn[] = new double[3];
-		double reflection[] = new double[3];
-		double mc[] = new double[3];
-		double Argb[] = new double[3];
-		double Drgb[] = new double[3];
-		double Srgb[] = new double[3];
-		double Lxyz[] = new double[3];
-		double Irgb[] = new double[3];
+	double p = 1.0;
+	boolean interact = false;
+	boolean nearestInter = false;
+	double tNearest = 1000000000;
+	double S[] = {0,0,0};	// surface of the sphere
+	double c[] = {0,0,0};	// center of each sphere
+	double r = 2;			// radius of each sphere
+	double t = 0;			// temp value of the ray
+	double N[] = {0,0,0};	// surface normal for a sphere
+	double R[] = {0,0,0};	// reflection vector
+	double phong[] = {0,0,0};
+	double colorReturn[] = {0,0,0};
+	double reflection[] = {0,0,0};
+	double mc[] = {0,0,0};
+	double Argb[] = {0,0,0}, Drgb[] = {0,0,0}, Srgb[] = {0,0,0}, Lxyz[] = {0,0,0}, Irgb[] = {0,0,0};
 
 		for (int iS=0; iS<spheres.length; iS++) {
 			c = spheres[iS].c;
@@ -169,25 +166,23 @@ public class Test extends BufferedApplet
 				} else
 					nearestInter = false;
 				if (nearestInter) {
-					System.out.println("v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
-					System.out.println("w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
-
 					S[0] = w[0]*t+v[0];
 					S[1] = w[1]*t+v[1];
 					S[2] = w[2]*t+v[2];
-					System.out.println("S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
-
 					N[0] = (S[0]-c[0]) / r;
 					N[1] = (S[1]-c[1]) / r;
 					N[2] = (S[2]-c[2]) / r;
-					System.out.println("N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
-
 					R[0] = w[0] - 2.0*dot(N,w)*N[0];
 					R[1] = w[1] - 2.0*dot(N,w)*N[1];
 					R[2] = w[2] - 2.0*dot(N,w)*N[2];
 					Argb = materials[iS].Argb;
 					Drgb = materials[iS].Drgb;
 					Srgb = materials[iS].Srgb;
+					System.out.println(iS+":\t"+Argb[0]+"\t"+Argb[1]+"\t"+Argb[2]);
+					System.out.println(iS+":\t"+Drgb[0]+"\t"+Drgb[1]+"\t"+Drgb[2]);
+					System.out.println(iS+":\t"+Srgb[0]+"\t"+Srgb[1]+"\t"+Srgb[2]);
+					System.out.println(iS+":\t"+mc[0]+"\t"+mc[1]+"\t"+mc[2]);
+
 					p = materials[iS].p;
 					phong[0] = Argb[0];
 					phong[1] = Argb[1];
@@ -197,7 +192,7 @@ public class Test extends BufferedApplet
 						Lxyz = lights[iL].Lxyz;
 						Irgb = lights[iL].Irgb;
 						double dotLN = Math.max(0,dot(Lxyz,N));
-						double dotLV = Math.max(0,Math.pow(dot(Lxyz,R),p));
+						double dotLV = Math.pow(Math.max(0,dot(Lxyz,R)),p);
 						phong[0] += Irgb[0]*(Drgb[0]*dotLN+Srgb[0]*dotLV);
 						phong[1] += Irgb[1]*(Drgb[1]*dotLN+Srgb[1]*dotLV);
 						phong[2] += Irgb[2]*(Drgb[2]*dotLN+Srgb[2]*dotLV);
@@ -211,6 +206,14 @@ public class Test extends BufferedApplet
 					newW[1] = R[1];
 					newW[2] = R[2];
 					normalize(newW);
+					System.out.println(iS+"S:\t"+S[0]+"\t"+S[1]+"\t"+S[2]);
+					System.out.println(iS+"v:\t"+v[0]+"\t"+v[1]+"\t"+v[2]);
+					System.out.println(iS+"w:\t"+w[0]+"\t"+w[1]+"\t"+w[2]);
+					System.out.println(iS+"N:\t"+N[0]+"\t"+N[1]+"\t"+N[2]);
+					System.out.println(iS+"R:\t"+R[0]+"\t"+R[1]+"\t"+R[2]);
+					System.out.println(iS+"newV:\t"+newV[0]+"\t"+newV[1]+"\t"+newV[2]);
+					System.out.println(iS+"newW:\t"+newW[0]+"\t"+newW[1]+"\t"+newW[2]);
+
 					reflection = getRayColor(newV, newW);
 					colorReturn[0] = phong[0]*(1.0-mc[0]) + reflection[0]*mc[0];
 					colorReturn[1] = phong[1]*(1.0-mc[1]) + reflection[1]*mc[1];
@@ -218,6 +221,8 @@ public class Test extends BufferedApplet
 			/*		colorReturn[0] = phong[0];
 					colorReturn[1] = phong[1];
 					colorReturn[2] = phong[2]; */
+					System.out.println(iS+"Return:\t"+colorReturn[0]+"\t"+colorReturn[1]+"\t"+colorReturn[2]);
+					
 				}
 			}
 		}
@@ -246,5 +251,9 @@ public class Test extends BufferedApplet
 		for (int i=0; i<src.length; i++) {
 			src[i] /= norm;
 		}
+	}
+	public void viewport(double src[], int dst[]) {
+		dst[0] = (int) ( 0.5 * width  + src[0] * scale );
+		dst[1] = (int) ( 0.5 * height - src[1] * scale );
 	}
 }

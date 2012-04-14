@@ -18,6 +18,10 @@ public class HitList {
 		return data.length>0 ? false : true;
 	}
 
+	public void empty() {
+		data = new double[0][3];
+	}
+
 	public void Union(double newlist[][]) {
 		int firstI = 0, secondI = 0;
 		int thisI = 0;
