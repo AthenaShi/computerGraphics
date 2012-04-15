@@ -3,19 +3,20 @@ import java.util.*;
 public class Geometry {
 	double a[], b[], c[], d[], e[], f[], g[], h[], i[], j[];
 	int number;
+	int maxN = 10;
 
 
 	public Geometry() {
-		a = new double[5];
-		b = new double[5];
-		c = new double[5];
-		d = new double[5];
-		e = new double[5];
-		f = new double[5];
-		g = new double[5];
-		h = new double[5];
-		i = new double[5];
-		j = new double[5];
+		a = new double[maxN];
+		b = new double[maxN];
+		c = new double[maxN];
+		d = new double[maxN];
+		e = new double[maxN];
+		f = new double[maxN];
+		g = new double[maxN];
+		h = new double[maxN];
+		i = new double[maxN];
+		j = new double[maxN];
 		number = 0;
 	}
 

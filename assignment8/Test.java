@@ -24,10 +24,10 @@ public class Test extends MISApplet {
 	    first[5][0] = 500;
 	    first[5][1] = -1; */
 
-	    second[0][0] = 300;
-	    second[0][1] = -1;
+	    second[0][0] = 350;
+	    second[0][1] = 1;
 	    second[1][0] = 400;
-	    second[1][1] = 1;
+	    second[1][1] = -1;
 /*	    second[2][0] = 300;
 	    second[2][1] = 1;
 	    second[3][0] = 400;
