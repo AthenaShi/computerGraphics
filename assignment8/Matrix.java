@@ -3,6 +3,8 @@ public class Matrix {
 	
 	double data[][] = new double[4][4];
 	double multiplyTemp[][] = new double[4][4];
+	double invertM[][] = new double[4][4];
+	double transM[][] = new double[4][4];
 	double temp[][] = new double[4][4];
 
 	// basic operation
@@ -93,10 +95,22 @@ public class Matrix {
 		}
 	}
 
+	public void multiply(double left[][], double right[][], double result[][]) {
+		// FIRST COPY MY ORIGINAL DATA TO A TEMPORARY LOCATION
+		// USE TEMP TO DO THE MATRIX MULTIPLICATION
+		for (int row = 0 ; row < 4 ; row++) {
+			for (int col = 0 ; col < 4 ; col++) {
+				result[row][col] = 0;
+				for (int i = 0 ; i < 4 ; i++)
+					result[row][col] += left[row][i] * right[i][col];
+			}
+		}
+	}
+
 	public void identity() {
 		createIdentityData(data);
 	}
-
+	
 	public void hermiteMatrix() {
 		createHermiteData(data);
 	}
@@ -128,38 +142,98 @@ public class Matrix {
 	}
 
 	public static void invert(double src[][], double dst[][]) {
-		// COMPUTE ADJOINT COFACTOR MATRIX FOR THE ROTATION/SCALE 3x3 SUBMATRIX
-
 		for (int i = 0 ; i < 3 ; i++)
 		for (int j = 0 ; j < 3 ; j++) {
 			int iu = (i + 1) % 3, iv = (i + 2) % 3;
 			int ju = (j + 1) % 3, jv = (j + 2) % 3;
 			dst[j][i] = src[iu][ju] * src[iv][jv] - src[iu][jv] * src[iv][ju];
 		}
-
-		// RENORMALIZE BY DETERMINANT TO INVERT ROTATION/SCALE SUBMATRIX
-
 		double det = src[0][0]*dst[0][0] + src[1][0]*dst[0][1] + src[2][0]*dst[0][2];
 		for (int i = 0 ; i < 3 ; i++)
 		for (int j = 0 ; j < 3 ; j++)
 			dst[i][j] /= det;
-
-		// INVERT TRANSLATION
-
 		for (int i = 0 ; i < 3 ; i++)
 			dst[i][3] = -dst[i][0]*src[0][3] - dst[i][1]*src[1][3] - dst[i][2]*src[2][3];
-
-		// NO PERSPECTIVE
-
 		for (int i = 0 ; i < 4 ; i++)
 			dst[3][i] = i < 3 ? 0 : 1;
 	}
+
+	public static void transpose(double src[][], double dst[][]) {
+		for (int i = 0 ; i < 4 ; i++)
+		for (int j = 0 ; j < 4 ; j++)
+			dst[i][j] = src[j][i];
+	}
+
 
 	public void transform(double src[], double dst[]) {
 		for (int row = 0 ; row < dst.length ; row++) {
 			dst[row] = 0;
 			for (int i = 0 ; i < src.length ; i++)
 				dst[row] += data[row][i] * src[i];
+		}
+	}
+
+	public void transform(Geometry Geo) {
+		int iS = Geo.getSubNumber()-1;
+		temp[0][0]=Geo.a[iS]; temp[0][1]=Geo.f[iS]; temp[0][2]=Geo.e[iS]; temp[0][3]=Geo.g[iS];
+		temp[1][0]=0	    ; temp[1][1]=Geo.b[iS]; temp[1][2]=Geo.d[iS]; temp[1][3]=Geo.h[iS];
+		temp[2][0]=0        ; temp[2][1]=0        ; temp[2][2]=Geo.c[iS]; temp[2][3]=Geo.i[iS];
+		temp[3][0]=0        ; temp[3][1]=0        ; temp[3][2]=0        ; temp[3][3]=Geo.j[iS];
+
+		invert(data, invertM);
+		transpose(invertM, transM);
+		multiply(temp, invertM, multiplyTemp);
+		multiply(transM, multiplyTemp, temp);
+		for (int row=0; row<4; row++) {
+			for (int col=0; col<4; col++) {
+				if (row < col) {	// if upper right
+					temp[row][col] += temp[col][row];
+				}
+			}
+		}
+		Geo.a[iS] = temp[0][0];
+		Geo.b[iS] = temp[1][1];
+		Geo.c[iS] = temp[2][2];
+		Geo.d[iS] = temp[1][2];
+		Geo.e[iS] = temp[0][2];
+		Geo.f[iS] = temp[0][1];
+		Geo.g[iS] = temp[0][3];
+		Geo.h[iS] = temp[1][3];
+		Geo.i[iS] = temp[2][3];
+		Geo.j[iS] = temp[3][3];
+	}
+
+
+	public void transform(Geometry srcGeo, Geometry dstGeo) {
+		for (int iS = 0 ; iS < srcGeo.getSubNumber() ; iS++) {
+			temp[0][0]=srcGeo.a[iS]; temp[0][1]=srcGeo.f[iS]; temp[0][2]=srcGeo.e[iS]; temp[0][3]=srcGeo.g[iS];
+			temp[1][0]=0	       ; temp[1][1]=srcGeo.b[iS]; temp[1][2]=srcGeo.d[iS]; temp[1][3]=srcGeo.h[iS];
+			temp[2][0]=0           ; temp[2][1]=0           ; temp[2][2]=srcGeo.c[iS]; temp[2][3]=srcGeo.i[iS];
+			temp[3][0]=0           ; temp[3][1]=0           ; temp[3][2]=0           ; temp[3][3]=srcGeo.j[iS];
+
+			invert(data, invertM);
+			transpose(invertM, transM);
+			multiply(temp, invertM, multiplyTemp);
+			multiply(transM, multiplyTemp, temp);
+			for (int row=0; row<4; row++) {
+				for (int col=0; col<4; col++) {
+					if (row < col) {	// if upper right
+						temp[row][col] += temp[col][row];
+		//			} else if (row > col) {	// if lower left
+		//				temp[row][col] = 0;
+					}
+				}
+			}
+			dstGeo.a[iS] = temp[0][0];
+			dstGeo.b[iS] = temp[1][1];
+			dstGeo.c[iS] = temp[2][2];
+			dstGeo.d[iS] = temp[1][2];
+			dstGeo.e[iS] = temp[0][2];
+			dstGeo.f[iS] = temp[0][1];
+			dstGeo.g[iS] = temp[0][3];
+			dstGeo.h[iS] = temp[1][3];
+			dstGeo.i[iS] = temp[2][3];
+			dstGeo.j[iS] = temp[3][3];
 		}
 	}
 

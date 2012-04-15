@@ -24,6 +24,21 @@ public class Geometry {
 		return number;
 	}
 
+	public void reverse() {
+		a[number-1] *= -1;
+		b[number-1] *= -1;
+		c[number-1] *= -1;
+		d[number-1] *= -1;
+		e[number-1] *= -1;
+		f[number-1] *= -1;
+		g[number-1] *= -1;
+		h[number-1] *= -1;
+		i[number-1] *= -1;
+		j[number-1] *= -1;
+	}
+
+
+
 	public void Sphere() {
 		a[number] = 1;
 		b[number] = 1;
