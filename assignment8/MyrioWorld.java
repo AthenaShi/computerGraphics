@@ -53,9 +53,9 @@ public class MyrioWorld extends MISApplet {
 	double v[] = {0,0,0};	// original of the ray
 	double w[] = {0,0,0};	// direction of the ray
 
-	public MyrioWorld() {
-		initialize();
-	}
+//	public MyrioWorld() {
+//		initialize();
+//	}
 
 	public void initialize() {
 		//////////// object //////////////////
